@@ -11,6 +11,9 @@ template<typename stringT>
 class job_spec_base
 {
 public:
+  typedef std::vector<stringT> arguments;
+  typedef std::map<stringT,stringT> environment;
+
   explicit job_spec_base(stringT const & executable)
     : executable_(executable)
   {}
@@ -20,37 +23,71 @@ public:
   stringT const & executable() const {
     return executable_;
   }
-  std::vector<stringT> const & args() const {
+  arguments const & args() const {
     return args_;
   }
-  std::map<stringT,stringT> const & env() const {
+  environment const & env() const {
     return env_;
+  }
+  stringT const & wd() const {
+    return wd_;
   }
   stringT const & stdout() const {
     return stdout_;
   }
+  stringT const & stderr() const {
+    return stderr_;
+  }
+  stringT const & username() const {
+    return username_;
+  }
+  stringT const & groupname() const {
+    return groupname_;
+  }
   //@}
 
-  job_spec_base& set_args(std::vector<stringT> const & args) {
-    std::vector<stringT> tmp(args);
+  //@{
+  // Modifiers, they all return a reference to the object so they can
+  // be chained
+  job_spec_base& set_args(arguments const & args) {
+    arguments tmp(args);
     tmp.swap(args_);
     return *this;
   }
 
-  job_spec_base& set_environment(std::map<stringT,stringT> const & env) {
-    std::map<stringT,stringT> tmp(env);
+  job_spec_base& set_env(environment const & env) {
+    environment tmp(env);
     tmp.swap(env_);
     return *this;
   }
-  job_spec_base& set_stdout_basename(stringT const & filename);
-  job_spec_base& set_stderr_basename(stringT const & filename);
-  job_spec_base& set_username(stringT const & username);
-  job_spec_base& set_groupname(stringT const & groupname);
+  job_spec_base& set_wd(stringT const & wd) {
+    return set_field(wd_, wd);
+  }
+  job_spec_base& set_stdout(stringT const & filename) {
+    return set_field(stdout_, filename);
+  }
+  job_spec_base& set_stderr(stringT const & filename) {
+    return set_field(stderr_, filename);
+  }
+  job_spec_base& set_username(stringT const & username) {
+    return set_field(username_, username);
+  }
+  job_spec_base& set_groupname(stringT const & groupname) {
+    return set_field(groupname_, groupname);
+  }
+
+private:
+  job_spec_base& set_field(stringT & field, stringT const & value) {
+    stringT tmp(value);
+    tmp.swap(field);
+    return *this;
+  }
 
 private:
   stringT executable_;
-  std::vector<stringT> args_;
-  std::map<stringT,stringT> env_;
+  arguments args_;
+  environment env_;
+  stringT wd_;
   stringT stdout_;
   stringT stderr_;
   stringT username_;
