@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iosfwd>
 
 namespace e {
 
@@ -115,6 +116,8 @@ typedef job_spec_base<std::string> job_spec;
  * Define job specifications for wide character platforms.
  */
 typedef job_spec_base<std::wstring> wjob_spec;
+
+std::ostream & operator<<(std::ostream & os, job_spec const & x);
 
 } // namespace e
 
