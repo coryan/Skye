@@ -1,5 +1,5 @@
-#ifndef escapment_lib_e_job_spec_hpp
-#define escapment_lib_e_job_spec_hpp
+#ifndef escapment_e_job_spec_hpp
+#define escapment_e_job_spec_hpp
 
 #include <vector>
 #include <map>
@@ -7,6 +7,13 @@
 
 namespace e {
 
+/**
+ * Define a job specification.
+ * 
+ * A job specification describes a job, that is, what is the name of
+ * the executable, what user should run it, what environment variables
+ * should be defined, etc.
+ */
 template<typename stringT>
 class job_spec_base
 {
@@ -14,12 +21,14 @@ public:
   typedef std::vector<stringT> arguments;
   typedef std::map<stringT,stringT> environment;
 
+  /// Constructor
   explicit job_spec_base(stringT const & executable)
     : executable_(executable)
   {}
 
-  //@{
-  // Accessors, read the different fields
+  /**@{
+   * Accessors, read the different fields.
+   */
   stringT const & executable() const {
     return executable_;
   }
@@ -44,11 +53,13 @@ public:
   stringT const & groupname() const {
     return groupname_;
   }
-  //@}
+  /**@}*/
 
-  //@{
-  // Modifiers, they all return a reference to the object so they can
-  // be chained
+  /**
+   *@{
+   * Modifiers, they all return a reference to the object so they can
+   * be chained.
+   */
   job_spec_base& set_args(arguments const & args) {
     arguments tmp(args);
     tmp.swap(args_);
@@ -75,6 +86,7 @@ public:
   job_spec_base& set_groupname(stringT const & groupname) {
     return set_field(groupname_, groupname);
   }
+  /**@}*/
 
 private:
   job_spec_base& set_field(stringT & field, stringT const & value) {
@@ -94,9 +106,16 @@ private:
   stringT groupname_;
 };
 
+/**
+ * Define job specifications for narrow character platforms.
+ */
 typedef job_spec_base<std::string> job_spec;
+
+/**
+ * Define job specifications for wide character platforms.
+ */
 typedef job_spec_base<std::wstring> wjob_spec;
 
 } // namespace e
 
-#endif // escapment_lib_e_job_spec_hpp
+#endif // escapment_e_job_spec_hpp
