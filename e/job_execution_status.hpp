@@ -11,6 +11,16 @@ namespace e {
  */
 class job_execution_status {
 public:
+  enum execution_state {
+    ES_NOT_STARTED,
+    ES_LAUNCHED,
+    ES_LAUNCH_FAILED,
+    ES_RUNNING,
+    ES_COMPLETED,
+    ES_COMPLETED_WITH_ERROR,
+  };
+
+
   job_execution_status(
       std::string const & request_id,
       std::string const & process_id,
