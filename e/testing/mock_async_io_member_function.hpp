@@ -42,13 +42,20 @@ class mock_async_io_member_function {
     calls_.push_back(invocation);
   }
 
+  void clear() {
+    calls_.clear();
+  }
+
   bool has_calls() const {
     return not calls_.empty();
   }
   std::size_t call_count() const {
     return calls_.size();
   }
-  value_type const & at(int index) {
+  value_type & at(int index) {
+    return calls_.at(index);
+  }
+  value_type const & at(int index) const {
     return calls_.at(index);
   }
 
