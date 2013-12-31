@@ -98,11 +98,9 @@ class parametric_invocation {
 
   template<typename... arg_types>
   void operator()(arg_types&&... a) {
-    typedef decltype(wrap_args_as_tuple(a...)) stored_tuple;
-  
-    stored_tuple t = wrap_args_as_tuple(a...);
+    auto t = wrap_args_as_tuple(a...);
     captures_.push_back(
-        parametric_call<stored_tuple>::create(std::move(t)));
+        parametric_call<decltype(t)>::create(std::move(t)));
   }
 
   void clear() {

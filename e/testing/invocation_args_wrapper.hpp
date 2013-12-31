@@ -98,5 +98,4 @@ wrap_args_as_tuple(args&&... a) {
 } // namespace testing
 } // namespace e
 
-
 #endif // escapement_e_testing_invocation_args_wrapper_hpp
