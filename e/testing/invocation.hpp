@@ -64,13 +64,13 @@ class parametric_call_base {
   virtual ~parametric_call_base() = 0;
 };
 
-template<typename... arg_types>
+template<typename tuple_type>
 class parametric_call : public parametric_call_base {
  public:
-  typedef std::tuple<arg_types...> value_type;
+  typedef tuple_type value_type;
 
-  static parametric_call_base::pointer create(arg_types... a) {
-    return parametric_call_base::pointer(new parametric_call(a...));
+  static parametric_call_base::pointer create(tuple_type && t) {
+    return parametric_call_base::pointer(new parametric_call(t));
   }
 
   value_type const & args() const {
@@ -78,14 +78,26 @@ class parametric_call : public parametric_call_base {
   }
 
  private:
-  parametric_call(arg_types... a)
+  parametric_call(tuple_type && t)
       : parametric_call_base()
-      , args_(a...)
+      , args_(t)
   {}
 
  private:
   value_type args_;
 };
+
+template<typename head_type, typename... tail_types>
+auto cref_tuple(head_type head, tail_types... a)
+    -> decltype(
+        std::tuple_cat(std::make_tuple(std::cref(head)), cref_tuple(a...))) {
+  return std::tuple_cat(std::make_tuple(std::cref(head)), cref_tuple(a...));
+}
+
+template<typename last>
+std::tuple<last> cref_tuple(last x) {
+  return std::make_tuple(std::cref(x));
+}
 
 class parametric_invocation {
  public:
@@ -97,7 +109,10 @@ class parametric_invocation {
 
   template<typename... arg_types>
   void operator()(arg_types... a) {
-    captures_.push_back(parametric_call<arg_types...>::create(a...));
+    typedef decltype(cref_tuple(a...)) stored_tuple;
+  
+    captures_.push_back(
+        parametric_call<stored_tuple>::create(cref_tuple(a...)));
   }
 
   void clear() {
