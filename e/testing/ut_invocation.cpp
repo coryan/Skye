@@ -1,6 +1,5 @@
 #include <e/testing/invocation.hpp>
 #include <e/testing/tuple_streaming.hpp>
-#include <e/testing/invocation_args_wrapper.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <sstream>
@@ -118,10 +117,8 @@ BOOST_AUTO_TEST_CASE( wrap_no_copy ) {
   BOOST_CHECK_EQUAL(os.str(), "<{unsafe},{unsafe},{unsafe},1,2>");
 }
 
-
-BOOST_AUTO_TEST_CASE( mock_invocation ) {
+BOOST_AUTO_TEST_CASE( mock_invocation_simple ) {
   typedef e::testing::invocation<int> invocation_mock;
-  invocation_mock::value_type x(1);
 
   invocation_mock record;
 
@@ -136,4 +133,96 @@ BOOST_AUTO_TEST_CASE( mock_invocation ) {
   BOOST_CHECK_EQUAL(record.at(0), invocation_mock::value_type(1));
   BOOST_CHECK_EQUAL(record.at(1), invocation_mock::value_type(2));
   BOOST_CHECK_EQUAL(record.at(2), invocation_mock::value_type(3));
+}
+
+BOOST_AUTO_TEST_CASE( mock_invocation_several_types ) {
+  typedef e::testing::invocation<
+    int,std::string&,int const&,char*> invocation_mock;
+
+  invocation_mock record;
+
+  BOOST_CHECK(not record.has_calls());
+  BOOST_CHECK_EQUAL(record.call_count(), 0);
+
+  int a = 0;
+  std::string b;
+  int c_base = 2;
+  int const & c = c_base;
+  char d[] = "1234";
+
+  b="abc"; record(++a, b, c, d);
+  b="bcd"; record(++a, b, c, d);
+  b="cde"; record(++a, b, c, d);
+
+  BOOST_REQUIRE_EQUAL(record.call_count(), 3);
+  BOOST_CHECK_EQUAL(record.at(0),
+                    invocation_mock::value_type(1, "abc", 2, d));
+  BOOST_CHECK_EQUAL(record.at(1),
+                    invocation_mock::value_type(2, "bcd", 2, d));
+  BOOST_CHECK_EQUAL(record.at(2),
+                    invocation_mock::value_type(3, "cde", 2, d));
+}
+
+BOOST_AUTO_TEST_CASE( mock_invocation_no_copy ) {
+  typedef e::testing::invocation<int,test_no_copy&> invocation_mock;
+
+  invocation_mock record;
+
+  BOOST_CHECK(not record.has_calls());
+  BOOST_CHECK_EQUAL(record.call_count(), 0);
+
+  int a = 0;
+  test_no_copy b(42);
+
+  record(++a, b);
+  record(++a, b);
+  record(++a, b);
+
+  BOOST_REQUIRE_EQUAL(record.call_count(), 3);
+  BOOST_CHECK_EQUAL(std::get<0>(record.at(0)), 1);
+  BOOST_CHECK_EQUAL(std::get<1>(record.at(0)).unsafe_pointer_value, &b);
+  BOOST_CHECK_EQUAL(std::get<0>(record.at(1)), 2);
+  BOOST_CHECK_EQUAL(std::get<1>(record.at(1)).unsafe_pointer_value, &b);
+  BOOST_CHECK_EQUAL(std::get<0>(record.at(2)), 3);
+  BOOST_CHECK_EQUAL(std::get<1>(record.at(2)).unsafe_pointer_value, &b);
+}
+
+BOOST_AUTO_TEST_CASE( mock_invocation_parametric_simple ) {
+  typedef e::testing::parametric_invocation invocation_mock;
+
+  invocation_mock record;
+
+  BOOST_CHECK(not record.has_calls());
+  BOOST_CHECK_EQUAL(record.call_count(), 0);
+
+  int a = 0;
+  int b_value = 3;
+  int const & b = b_value;
+  std::string c("abc");
+  std::string d_value("dce");
+  std::string const & d = c;
+
+  record(a, b);
+  record(a, b, c);
+  record(a, b, c, d);
+
+  BOOST_REQUIRE_EQUAL(record.call_count(), 3);
+}
+
+BOOST_AUTO_TEST_CASE( mock_invocation_parametric_no_copy ) {
+  typedef e::testing::parametric_invocation invocation_mock;
+
+  invocation_mock record;
+
+  BOOST_CHECK(not record.has_calls());
+  BOOST_CHECK_EQUAL(record.call_count(), 0);
+
+  int a = 0;
+  test_no_copy b_value(42);
+  test_no_copy const & b = b_value;
+
+  record(a);
+  record(a, b);
+
+  BOOST_REQUIRE_EQUAL(record.call_count(), 2);
 }

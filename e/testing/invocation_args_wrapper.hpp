@@ -95,15 +95,6 @@ wrap_args_as_tuple(args&&... a) {
       forward_wrapper(a)...);
 }
 
-#if 0
-template<typename... args>
-std::tuple<args...> wrap_args_as_tuple(args&&... a) {
-  return std::forward_as_tuple(a...);
-}
-#else
-
-#endif /* 1 */
-
 } // namespace testing
 } // namespace e
 

@@ -1,7 +1,7 @@
 #ifndef escapement_e_testing_invocation_hpp
 #define escapement_e_testing_invocation_hpp
 
-#include <tuple>
+#include <e/testing/invocation_args_wrapper.hpp>
 #include <vector>
 #include <memory>
 
@@ -21,12 +21,11 @@ class invocation {
   invocation() {}
   ~invocation() {}
 
-  typedef std::tuple<args...> value_type;
+  typedef typename deduce_wrap_args_as_tuple_types<args...>::tuple value_type;
   typedef std::vector<value_type> capture_sequence;
 
   void operator()(args... a) {
-    value_type t(a...);
-    captures_.push_back(std::move(t));
+    captures_.push_back(wrap_args_as_tuple(a...));
   }
 
   void clear() {
@@ -68,9 +67,11 @@ template<typename tuple_type>
 class parametric_call : public parametric_call_base {
  public:
   typedef tuple_type value_type;
+  virtual ~parametric_call() {}
 
   static parametric_call_base::pointer create(tuple_type && t) {
-    return parametric_call_base::pointer(new parametric_call(t));
+    return parametric_call_base::pointer(
+        new parametric_call(std::forward<tuple_type>(t)));
   }
 
   value_type const & args() const {
@@ -87,18 +88,6 @@ class parametric_call : public parametric_call_base {
   value_type args_;
 };
 
-template<typename head_type, typename... tail_types>
-auto cref_tuple(head_type head, tail_types... a)
-    -> decltype(
-        std::tuple_cat(std::make_tuple(std::cref(head)), cref_tuple(a...))) {
-  return std::tuple_cat(std::make_tuple(std::cref(head)), cref_tuple(a...));
-}
-
-template<typename last>
-std::tuple<last> cref_tuple(last x) {
-  return std::make_tuple(std::cref(x));
-}
-
 class parametric_invocation {
  public:
   parametric_invocation() {}
@@ -108,11 +97,12 @@ class parametric_invocation {
   typedef std::vector<value_type> capture_sequence;
 
   template<typename... arg_types>
-  void operator()(arg_types... a) {
-    typedef decltype(cref_tuple(a...)) stored_tuple;
+  void operator()(arg_types&&... a) {
+    typedef decltype(wrap_args_as_tuple(a...)) stored_tuple;
   
+    stored_tuple t = wrap_args_as_tuple(a...);
     captures_.push_back(
-        parametric_call<stored_tuple>::create(cref_tuple(a...)));
+        parametric_call<stored_tuple>::create(std::move(t)));
   }
 
   void clear() {
