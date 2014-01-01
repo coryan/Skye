@@ -1,6 +1,7 @@
 #ifndef escapement_e_testing_mock_acceptor_hpp
 #define escapement_e_testing_mock_acceptor_hpp
 
+#include <e/testing/mock_async_accept_member_function.hpp>
 #include <e/testing/mock_service.hpp>
 
 namespace e {
@@ -16,7 +17,8 @@ class mock_acceptor : public mock_service {
   virtual ~mock_acceptor() = 0;
 
   static invocation<mock_acceptor*,boost::asio::io_service*> constructor_mock;
-  parametric_invocation async_accept;
+
+  mock_async_accept_member_function async_accept;
 
   //@{
   /**
