@@ -9,6 +9,8 @@ namespace testing {
 
 class mock_acceptor : public mock_service {
  public:
+  typedef std::string endpoint_type;
+
   explicit mock_acceptor(boost::asio::io_service & io)
       : mock_service(io)
   {
