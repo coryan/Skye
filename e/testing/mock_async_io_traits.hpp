@@ -52,7 +52,7 @@ class mock_async_write_arg_capture : public mock_async_write_arg_capture_base {
     return boost::asio::buffer_size(buffers_);
   }
   virtual void const * get_data() const {
-    // TODO(coryan) this only works for simple tests with a single buffer.
+    // TODO(ES-27)
     typedef typename buffer_sequence::value_type buffer_type;
     buffer_type const & b = *buffers_.begin();
     return boost::asio::buffer_cast<void const*>(b);
@@ -107,7 +107,7 @@ class mock_async_read_arg_capture
     return boost::asio::buffer_size(buffers_);
   }
   virtual void const * get_data() const {
-    // TODO(coryan) this only works for simple tests with a single buffer.
+    // TODO(ES-27)
     typedef typename buffer_sequence::value_type buffer_type;
     buffer_type const & b = *buffers_.begin();
     return boost::asio::buffer_cast<void*>(b);

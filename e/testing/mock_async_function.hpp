@@ -52,9 +52,7 @@ namespace testing {
  * of mocking, while Turtle tends to support "record -> replay".  I
  * find the latter very tedious.
  *
- * TODO(coryan): I expect this could grow into a real extension to the
- * Turtle mocking library, but I will write this on an as-needed
- * basis.
+ * TODO(ES-26)
  *
  * Boost ASIO asynchronous calls can be characterized by the type of
  * their handler, here we capture this in a traits class that derived

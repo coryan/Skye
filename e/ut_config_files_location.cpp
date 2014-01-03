@@ -148,9 +148,7 @@ BOOST_AUTO_TEST_CASE(test_impl_function) {
       location.string().find("abc") == 0,
       "The location (" << location << ") should start with abc");
 
-  // TODO(coryan) this test will fail on Windows and other platforms,
-  // it needs to be generic but that would require knowing a lot about
-  // the implementation.
+  // TODO(ES-24)
   location = e::config_files_location_impl(
       "foo/bar/bin/baz", nullptr, nullptr,
       [](fs::path const&) { return true; });

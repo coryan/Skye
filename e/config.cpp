@@ -3,7 +3,7 @@
 // This is an ugly mess of #ifdefs, but better here than sprinkled
 // around in the code.
 
-// TODO(coryan) provide good platform-specific defaults
+// TODO(ES-22)
 #if !defined(ESCAPEMENT_DEFAULT_SYSCONFDIR)
 #  define ESCAPEMENT_DEFAULT_SYSCONFDIR "/etc"
 #endif // ESCAPEMENT_DEFAULT_SYSCONFDIR
