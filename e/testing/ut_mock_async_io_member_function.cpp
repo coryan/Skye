@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( mock_async_read_member_function_with_calls ) {
   BOOST_CHECK_EQUAL(total_bt, 2);
 
   char const msg[] = "TEST\n";
-  amf.at(0)->set_data(msg, sizeof(msg) - 1);
+  amf.at(0)->set_data(msg, sizeof(msg));
 
   BOOST_CHECK_EQUAL(std::string(raw), std::string(msg));
 }
