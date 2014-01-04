@@ -7,12 +7,12 @@
 namespace e {
 
 /**
- * Directory validation functor
+ * Directory validation functor.
  */
 typedef bool (*directory_validator)(boost::filesystem::path const &);
 
 /**
- * Return true if the path is a readable directory
+ * Return true if the path is a readable directory.
  */
 bool usable_config_files_directory(boost::filesystem::path const &);
 
@@ -28,7 +28,7 @@ bool usable_config_files_directory(boost::filesystem::path const &);
  *   variable, or nullptr if not defined
  * @param program_root the value of the program specific *_ROOT
  *   environment variable, or nullptr if not defined
- * @param directory_validator, validate the computed directories,
+ * @param validator validate the computed directories,
  *   intended for testing.
  */
 boost::filesystem::path config_files_location_impl(
