@@ -54,10 +54,10 @@ class functor_returner : public returner<return_type> {
   functor_type functor_;
 };
 
-template<typename return_type>
+template<typename return_type, typename value_type>
 class value_returner : public returner<return_type> {
  public:
-  value_returner(return_type value)
+  value_returner(value_type && value)
       : value_(value)
   {}
   virtual ~value_returner() {}
@@ -67,7 +67,7 @@ class value_returner : public returner<return_type> {
   }
 
  private:
-  return_type value_;
+  value_type value_;
 };
 
 /**
@@ -80,11 +80,19 @@ struct create_returner;
  * If the object type is convertible to the return value, assume it is
  * a value, store it and use it as the return in each call.
  */
-template<typename return_value, typename object_type>
-struct create_returner<return_value,object_type,true> {
-  static typename returner<return_value>::pointer create(object_type object) {
-    typedef typename returner<return_value>::pointer pointer; 
-    return pointer(new value_returner<return_value>(object));
+template<typename return_type, typename object_type>
+struct create_returner<return_type,object_type,true> {
+  // Try to generate more sensible error messages for the poor user.
+  typedef typename std::remove_reference<object_type>::type value_type;
+  static_assert(
+      std::is_convertible<value_type, return_type>::value,
+      "value_type (object_type after all reference qualifiers are removed) "
+      "should be convertible to return_type.");
+
+  static typename returner<return_type>::pointer create(object_type && object) {
+    typedef typename returner<return_type>::pointer pointer; 
+    return pointer(new value_returner<return_type,value_type>(
+        std::forward<value_type>(object)));
   }
 };
 

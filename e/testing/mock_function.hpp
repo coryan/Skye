@@ -5,6 +5,7 @@
 #include <e/testing/mock_returner.hpp>
 #include <vector>
 #include <memory>
+#include <utility>
 
 namespace e {
 namespace testing {
@@ -71,12 +72,14 @@ class mock_function<return_type(arg_types...)> {
   }
 
   template<typename object_type>
-  void returns(object_type object) {
+  void returns(object_type && object) {
+    typedef typename std::remove_reference<object_type>::type value_type;
     bool const convertible =
-        std::is_convertible<object_type, return_type>::value;
+        std::is_convertible<value_type, return_type>::value;
 
     returner_ = create_returner<
-      return_type,object_type,convertible>::create(object);
+      return_type,object_type,convertible>::create(
+          std::forward<object_type>(object));
   }
   
 
