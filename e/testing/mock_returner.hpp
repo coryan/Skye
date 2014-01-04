@@ -102,9 +102,7 @@ struct create_returner<return_type,object_type,true> {
  */
 template<typename return_value, typename object_type>
 struct create_returner<return_value,object_type,false> {
-  // TODO() Provide better error messages by using the concept-like
-  // tricks in Boost.ASIO and Boost.Proto
-  // http://cpp-next.com/archive/2010/09/expressive-c-why-template-errors-suck-and-what-you-can-do-about-it/
+  // TODO(ES-39)
   static typename returner<return_value>::pointer create(object_type object) {
     typedef typename returner<return_value>::pointer pointer; 
     return pointer(new functor_returner<return_value,object_type>(object));
