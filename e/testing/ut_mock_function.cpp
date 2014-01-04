@@ -1,39 +1,9 @@
 #include <e/testing/mock_function.hpp>
+#include <e/testing/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 
 using namespace e::testing;
-
-/**
- * Provide simple classes and functions to exercise mock_function.
- */
-namespace {
-
-template<typename T>
-std::string use_mock(T & mock) {
-  std::string x("this is a string");
-  std::string y("this is another string");
-  (void) mock.f1(x, y);
-  mock.f2(3, 4, 5);
-
-  return mock.f3(42, "hello");
-}
-
-class base {
- public:
-  virtual ~base() {}
-
-  virtual std::string f3(int x, char const * y) = 0;
-};
-
-class my_mock_class : public base {
- public:
-  my_mock_class() {}
-  virtual ~my_mock_class() {}
-
-};
-
-} // anonymous namespace
 
 BOOST_AUTO_TEST_CASE( mock_function_void ) {
   mock_function<void(int,int)> function;
@@ -132,5 +102,79 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
   BOOST_CHECK_EQUAL(std::get<1>(function.at(0)), arg);
   BOOST_CHECK_EQUAL(std::get<0>(function.at(1)), sizeof(arg));
   BOOST_CHECK_EQUAL(std::get<1>(function.at(1)), arg);
+}
+/**
+ * Provide simple classes and functions to exercise mock_function.
+ */
+namespace {
+
+template<typename T>
+std::string use_mock(T & mock) {
+  std::string x("this is a string");
+  std::string y("this is another string");
+  (void) mock.f1(x, y);
+  mock.f2(3, 4, 5);
+
+  return mock.f3(42, "hello");
+}
+
+class base {
+ public:
+  virtual ~base() {}
+
+  virtual std::string f3(int x, char const * y) = 0;
+};
+
+class my_mock_class : public base {
+ public:
+  my_mock_class() {}
+  virtual ~my_mock_class() {}
+
+  mock_function<int(std::string const&, std::string&)> f1;
+  mock_function<void(int,int,int)> f2;
+
+  virtual std::string f3(int x, char const * y) {
+    return f3_capture(x, y);
+  }
+  mock_function<std::string(int,char const*)> f3_capture;
+};
+
+template<typename used_type>
+void static_polymorphism_use(used_type & object) {
+  std::string non_const("y");
+  object.f1(std::string("x"), non_const);
+  object.f2(1, 2, 3);
+  object.f3(5, "1234");
+}
+
+void dynamic_polymorphism_use(base & object) {
+  object.f3(7, "123456");
+}
+
+} // anonymous namespace
+
+BOOST_AUTO_TEST_CASE( mock_function_member_functions ) {
+  my_mock_class object;
+  object.f1.returns( 42 );
+  object.f3_capture.returns( std::string("42") );
+
+  static_polymorphism_use(object);
+  BOOST_REQUIRE_EQUAL(object.f1.call_count(), 1);
+  BOOST_REQUIRE_EQUAL(
+      object.f1.at(0), std::make_tuple(std::string("x"), std::string("y")));
+
+  BOOST_REQUIRE_EQUAL(object.f2.call_count(), 1);
+  BOOST_REQUIRE_EQUAL(
+      object.f2.at(0), std::make_tuple(1, 2, 3));
+
+  BOOST_REQUIRE_EQUAL(object.f3_capture.call_count(), 1);
+  BOOST_REQUIRE_EQUAL(
+      std::get<0>(object.f3_capture.at(0)), 5);
+
+  dynamic_polymorphism_use(object);
+
+  BOOST_REQUIRE_EQUAL(object.f3_capture.call_count(), 2);
+  BOOST_REQUIRE_EQUAL(
+      std::get<0>(object.f3_capture.at(1)), 7);
 }
 
