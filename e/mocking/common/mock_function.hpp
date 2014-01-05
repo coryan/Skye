@@ -3,7 +3,7 @@
 
 #include <e/mocking/common/detail/invocation_args_wrapper.hpp>
 #include <e/mocking/common/detail/mock_returner.hpp>
-#include <e/mocking/common/detail/validator.hpp>
+#include <e/mocking/common/detail/boost_reporting.hpp>
 #include <vector>
 #include <memory>
 #include <utility>
@@ -102,12 +102,12 @@ class mock_function<return_type(arg_types...)> {
    * is intended to be used in test code only, so any namespace
    * pollution can be kept under control.
    */
-# define m_check() check(ESCAPEMENT_MOCK_LOCATION)
+# define check_called() check(ESCAPEMENT_MOCK_LOCATION)
 
   /// Use BOOST_CHECK_* validation.
   detail::report_with_check<capture_sequence>
   check(detail::location const & where) {
-    return detail::report_with_check<capture_sequence>(&captures_, where);
+    return detail::report_with_check<capture_sequence>(captures_, where);
   }
 
   //# define e_m_require() check(E_M_LOCATION)

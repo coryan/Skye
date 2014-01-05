@@ -191,12 +191,31 @@ BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
   }
   function( 7, std::string("foo"));
 
-  function.m_check();
-  function.m_check().at_least( 2 );
+  function.check_called();
+  function.check_called().at_least( 2 );
+  function.check_called().at_least( 2 ).at_most( 30 );
+  function.check_called().between( 3, 30 );
+  function.check_called().exactly( 12 );
+
+  mock_function<void(int)> f2;
+  f2.check_called().never();
+  f2(42);
+  f2.check_called().once();
+
 
 #if 0
-  function.check().called_with( 42, std::string("foo") );
-  function.check().called_with( 77, dont_care ).never();
+
+  function.check_called().at_least( 3 ).with( 7, std::string("bar" ));
+  function.check_called().with( 7, std::string("bar" ));
+
+  function.check_called().never().with( 77, dont_care );
+
+  // How do we make this be non-sensical
+  function.check_called().with( 7, std::string("bar" )).once();
+
+
+
+  function.check().called_with( 7, std::string("bar") ).between( 7, 12);
 
   function.require().at_least( 2 );
 
@@ -236,5 +255,3 @@ BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
 
 #endif
 }
-
-

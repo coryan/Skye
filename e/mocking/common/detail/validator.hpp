@@ -1,17 +1,23 @@
-#ifndef escapement_e_mocking_common_validator_hpp
-#define escapement_e_mocking_common_validator_hpp
+#ifndef escapement_e_mocking_common_detail_validator_hpp
+#define escapement_e_mocking_common_detail_validator_hpp
 
-#include <memory>
 #include <string>
 #include <sstream>
-
-#include <boost/test/unit_test.hpp>
+#include <iostream>
+#include <tuple>
 
 namespace e {
 namespace mocking {
 namespace common {
 namespace detail {
 
+/**
+ * Wrap function name, filename and line number into a simple struct.
+ *
+ * This is a simple wrapper to collect all of __func__, __FILE__ and
+ * __LINE__ into a single object.  It is used by the validators to
+ * pass this information to the underlying unit testing framework.
+ */
 struct location {
   location(
       char const * fu,
@@ -26,101 +32,189 @@ struct location {
   char const * file;
   int line;
 };
+
+/**
+ * Define a streaming operator.
+ */
 inline std::ostream & operator<<(std::ostream & os, location const & x) {
   return os << x.function << "@[" << x.file << ":" << x.line << "]";
 }
+
+/**
+ * Capture the location macros into an object.
+ */
 #define ESCAPEMENT_MOCK_LOCATION \
   e::mocking::common::detail::location(__func__, __FILE__, __LINE__)
 
+/**
+ * A simple object to hold the validation results
+ */
+struct validation_result {
+  bool pass;
+  bool short_circuit;
+  std::string msg;
+
+  //@{
+  /**
+   * @name comparison operators for testing
+   */
+  bool operator==(validation_result const & rhs) const {
+    return (pass == rhs.pass and short_circuit == rhs.short_circuit
+            and msg == rhs.msg);
+  }
+  bool operator!=(validation_result const & rhs) const {
+    return !(*this == rhs);
+  }
+  //@}
+};
+
+/**
+ * Define a streaming operator (mostly for unit testing).
+ */
+inline std::ostream & operator<<(
+    std::ostream & os, validation_result const & x) {
+  return os << std::boolalpha
+            << "validation_result{pass=" << x.pass
+            << ",short_circuit=" << x.short_circuit
+            << ",msg='" << x.msg << "'}";
+}
+
+/**
+ * Define the interface for validator objects.
+ *
+ * Validators are asked to filter the sequence of argument list
+ * captures, and -- once all the filter are applied -- verify that the
+ * resulting set meets expectations.
+ *
+ * Typically validators are created by a user of a mock function and
+ * chained together, for example:
+ *
+ * @code
+ * mock_function<void(int,std::string const&)> x;
+ * x(1, "foo");
+ * x(2, "bar");
+ *
+ * x.check_called().once().with(1, "foo");
+ * x.check_called().exactly(2);
+ * @endcode
+ */
 template<typename sequence_type>
 class validator {
  public:
-  explicit validator(sequence_type * sequence)
-      : sequence_(sequence)
-  {}
+  validator() {}
+  virtual ~validator() {}
 
-  virtual bool pass(std::string & msg) const = 0;
+  /**
+   * Apply any filtering required by the validator
+   */
+  virtual void filter(sequence_type & sequence) const = 0;
 
-  sequence_type * sequence_;
+  /**
+   * Verify that the sequence after all filtering meets the validator
+   * requirements.
+   */
+  virtual validation_result validate(sequence_type const &) const = 0;
 };
 
-template<typename sequence_type>
-class trivial_validator : public validator<sequence_type> {
- public:
-  explicit trivial_validator(sequence_type * sequence)
-      : validator<sequence_type>(sequence)
-  {}
-
-  virtual bool pass(std::string &) const {
-    return true;
-  }
-};
-
+/**
+ * Verify that the argument capture after all filters has at least a
+ * prescribed number of calls.
+ */
 template<typename sequence_type>
 class at_least_validator : public validator<sequence_type> {
  public:
-  explicit at_least_validator(sequence_type * sequence, std::size_t expected)
-      : validator<sequence_type>(sequence)
-      , expected_(expected)
+  at_least_validator(std::size_t min)
+      : min_(min)
   {}
 
-  virtual bool pass(std::string & msg) const {
-    if (this->sequence_->size() >= expected_) {
-      return true;
+  void filter(sequence_type & sequence) const override {
+  }
+  validation_result validate(
+      sequence_type const & sequence) const override {
+    std::cout << " -> " << __PRETTY_FUNCTION__;
+    std::size_t size = sequence.size();
+    if (size >= min_) {
+      return validation_result{true, false, std::string()};
     }
     std::ostringstream os;
     os << "failed validation, expected at least " 
-       << expected_ << " invocations, but only "
-       << this->sequence_->size() << " where present.";
-    msg = os.str();
-    return false;
+       << min_ << " invocations, but only "
+       << size << " where present.";
+    return validation_result{false, false, os.str()};
+  }
+
+ private:
+  std::size_t min_;
+};
+
+/**
+ * Verify that the argument capture after all filters has at most a
+ * prescribed number of calls.
+ */
+template<typename sequence_type>
+class at_most_validator : public validator<sequence_type> {
+ public:
+  at_most_validator(std::size_t max)
+      : max_(max)
+  {}
+
+  void filter(sequence_type & sequence) const override {
+  }
+  validation_result validate(
+      sequence_type const & sequence) const override {
+    std::cout << " -> " << __PRETTY_FUNCTION__;
+    std::size_t size = sequence.size();
+    if (size <= max_) {
+      return validation_result{true, false, std::string()};
+    }
+    std::ostringstream os;
+    os << "failed validation, expected at most " 
+       << max_ << " invocations, but "
+       << size << " where present.";
+    return validation_result{false, false, os.str()};
+  }
+
+ private:
+  std::size_t max_;
+};
+
+/**
+ * Verify that the argument capture after all filters has exactly a
+ * prescribed number of calls.
+ *
+ * @param short_circuit define if the validation should short circuit
+ * the chain.  This is desirable for the never() validator.
+ */
+template<typename sequence_type, bool short_circuit>
+class exactly_validator : public validator<sequence_type> {
+ public:
+  exactly_validator(std::size_t expected)
+      : expected_(expected)
+  {}
+
+  void filter(sequence_type & sequence) const override {
+  }
+  validation_result validate(
+      sequence_type const & sequence) const override {
+    std::cout << " -> " << __PRETTY_FUNCTION__;
+    std::size_t size = sequence.size();
+    if (size == expected_) {
+      return validation_result{true, short_circuit, std::string()};
+    }
+    std::ostringstream os;
+    os << "failed validation, expected exactly " 
+       << expected_ << " invocations, but "
+       << size << " where present.";
+    return validation_result{false, short_circuit, os.str()};
   }
 
  private:
   std::size_t expected_;
 };
 
-template<typename sequence_type>
-class report_with_check {
- public:
-  report_with_check(sequence_type * sequence, location const & where)
-      : validator_(new trivial_validator<sequence_type>(sequence))
-      , where_(where)
-  {
-  }
-  ~report_with_check() {
-    std::string msg;
-    bool result = validator_->pass(msg);
-    if (result) {
-      boost::unit_test::unit_test_log.set_checkpoint(
-          where_.file, where_.line);
-      return;
-    }
-    boost::unit_test::framework::assertion_result( false );
-    boost::unit_test::unit_test_log
-        << boost::unit_test::log::begin(
-            where_.file, where_.line)
-        << boost::unit_test::log_all_errors
-        << msg
-        << boost::unit_test::log::end();
-  }
-
-  report_with_check & at_least(std::size_t expected) {
-    validator_.reset(
-        new at_least_validator<sequence_type>(
-            validator_->sequence_, expected));
-    return *this;
-  }
-
- private:
-  std::shared_ptr<validator<sequence_type>> validator_;
-  location where_;
-};
-
-
 } // namespace detail
 } // namespace common
 } // namespace mocking
 } // namespace e
 
-#endif // escapement_e_mocking_common_validator_hpp
+#endif // escapement_e_mocking_common_detail_validator_hpp
