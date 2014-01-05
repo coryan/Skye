@@ -1,6 +1,7 @@
 #ifndef escapement_e_mocking_common_detail_validator_hpp
 #define escapement_e_mocking_common_detail_validator_hpp
 
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -207,6 +208,39 @@ class exactly_validator : public validator<sequence_type> {
 
  private:
   std::size_t expected_;
+};
+
+/**
+ * Implement a filter that only accepts captures matching an specific value.
+ */
+template<class sequence_type>
+class equality_filter : public validator<sequence_type> {
+ public:
+  typedef typename sequence_type::value_type value_type;
+
+  equality_filter(value_type && match)
+      : match_(match)
+  {}
+  equality_filter(value_type const & match)
+      : match_(match)
+  {}
+
+  void filter(sequence_type & sequence) const override {
+    sequence.erase(
+        std::remove_if(
+            sequence.begin(), sequence.end(),
+            [this](value_type const & x) {
+              return x != match_;
+            }),
+        sequence.end());
+  }
+  validation_result validate(
+      sequence_type const & ) const override {
+    return validation_result{true, false, std::string()};
+  }
+  
+ private:
+  value_type match_;
 };
 
 } // namespace detail
