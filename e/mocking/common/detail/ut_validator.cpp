@@ -12,28 +12,70 @@ typedef std::vector<arguments> capture_sequence;
 
 using namespace e::mocking::common::detail;
 
-BOOST_AUTO_TEST_CASE( basic_tests ) {
+BOOST_AUTO_TEST_CASE( test_at_least_validator ) {
+  capture_sequence seq{
+    std::make_tuple(1, "foo"),
+    std::make_tuple(1, "foo"),
+    std::make_tuple(2, "bar"),
+    std::make_tuple(1, "foo")};
+
+  at_least_validator<capture_sequence> v_pass(4);
+  auto expected = validation_result{true,false,""};
+  BOOST_CHECK_EQUAL(v_pass.validate(seq), expected);
+
+  at_least_validator<capture_sequence> v_fail(7);
+  expected = validation_result{false,false,""};
+  BOOST_CHECK_EQUAL(v_fail.validate(seq).pass, expected.pass);
+
+  v_pass.filter(seq);
+  BOOST_CHECK_EQUAL(seq.size(), 4);
+}
+
+BOOST_AUTO_TEST_CASE( test_at_most_validator ) {
+  capture_sequence seq{
+    std::make_tuple(1, "foo"),
+    std::make_tuple(1, "foo"),
+    std::make_tuple(2, "bar"),
+    std::make_tuple(1, "foo")};
+
+  at_most_validator<capture_sequence> v_pass(4);
+  auto expected = validation_result{true,false,""};
+  BOOST_CHECK_EQUAL(v_pass.validate(seq), expected);
+
+  at_most_validator<capture_sequence> v_fail(2);
+  expected = validation_result{false,false,""};
+  BOOST_CHECK_EQUAL(v_fail.validate(seq).pass, expected.pass);
+
+  v_pass.filter(seq);
+  BOOST_CHECK_EQUAL(seq.size(), 4);
+}
+
+BOOST_AUTO_TEST_CASE( test_exactly_validator ) {
   capture_sequence seq;
 
-  exactly_validator<capture_sequence,false> v1(0);
-  validation_result expected{true,false,""};
-  BOOST_CHECK_EQUAL(v1.validate(seq), expected);
+  exactly_validator<capture_sequence,false> v_pass(0);
+  auto expected = validation_result{true,false,""};
+  BOOST_CHECK_EQUAL(v_pass.validate(seq), expected);
 
-  exactly_validator<capture_sequence,true> v2(0);
+  exactly_validator<capture_sequence,true> v_pass_sc(0);
   expected = validation_result{true,true,""};
-  BOOST_CHECK_EQUAL(v2.validate(seq), expected);
+  BOOST_CHECK_EQUAL(v_pass_sc.validate(seq), expected);
 
   seq.push_back(std::make_tuple(1, "foo"));
   seq.push_back(std::make_tuple(1, "foo"));
   seq.push_back(std::make_tuple(2, "bar"));
   seq.push_back(std::make_tuple(1, "foo"));
 
-  at_least_validator<capture_sequence> v3(4);
+  exactly_validator<capture_sequence,false> v_pass_nsc(4);
   expected = validation_result{true,false,""};
-  BOOST_CHECK_EQUAL(v3.validate(seq), expected);
+  BOOST_CHECK_EQUAL(v_pass_nsc.validate(seq), expected);
 
-  at_least_validator<capture_sequence> v4(7);
+  exactly_validator<capture_sequence,false> v_fail_nsc(7);
   expected = validation_result{false,false,""};
-  BOOST_CHECK_EQUAL(v4.validate(seq).pass, expected.pass);
+  BOOST_CHECK_EQUAL(v_fail_nsc.validate(seq).pass, expected.pass);
 
+  v_pass.filter(seq);
+  BOOST_CHECK_EQUAL(seq.size(), 4);
 }
+
+

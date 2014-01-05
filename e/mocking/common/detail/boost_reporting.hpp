@@ -133,14 +133,12 @@ class report_with_check {
     }
 
     validation_result r;
-    std::cout << where_ << ": start validation.. ";
     for (auto i : validators_) {
       r = i->validate(sequence);
       if (not r.pass or r.short_circuit) {
         break;
       }
     }
-    std::cout << " done: " << r << std::endl;
     if (r.pass) {
       boost::unit_test::unit_test_log.set_checkpoint(
           where_.file, where_.line);
