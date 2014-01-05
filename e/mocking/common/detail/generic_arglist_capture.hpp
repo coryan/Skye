@@ -32,7 +32,7 @@ class any_tuple_capture : public arglist_capture_base {
    */
   static arglist_capture_base::pointer create(tuple_type && t) {
     return arglist_capture_base::pointer(
-        new parametric_call(std::forward<tuple_type>(t)));
+        new any_tuple_capture(std::forward<tuple_type>(t)));
   }
 
  private:

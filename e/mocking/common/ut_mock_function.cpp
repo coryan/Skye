@@ -178,3 +178,63 @@ BOOST_AUTO_TEST_CASE( mock_function_member_functions ) {
       std::get<0>(object.f3_capture.at(1)), 7);
 }
 
+BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
+
+  mock_function<int(int,std::string)> function;
+
+  function.returns( 7 );
+  for (int i = 0; i != 2; ++i) {
+    function( 42, std::string("foo"));
+  }
+  for (int i = 0; i != 9; ++i) {
+    function( 7, std::string("bar"));
+  }
+  function( 7, std::string("foo"));
+
+  function.m_check();
+  function.m_check().at_least( 2 );
+
+#if 0
+  function.check().called_with( 42, std::string("foo") );
+  function.check().called_with( 77, dont_care ).never();
+
+  function.require().at_least( 2 );
+
+  function
+      .capture_strategy( ... );
+
+  function
+      .extract_called_with( 7, std::string("bar") )
+      .once();
+
+  function
+      .assert_called_with( 7, std::string("bar") )
+      .at_least( 2 );
+
+  function
+      .assert_called_with( 7, std::string("bar") )
+      .at_most( 10 );
+
+  function
+      .assert_called( )
+      .between( 5, 15 );
+
+  function
+      .assert_called( )
+      .exactly( 11 );
+
+  function
+      .side_effect( [](int,std::string) { capture } );
+
+  // If we get side_effect() working we can get things like this to work:
+  function.throws( ... );
+  function.calls( ... );
+
+
+  function
+      .call_args_list().at(0);
+
+#endif
+}
+
+

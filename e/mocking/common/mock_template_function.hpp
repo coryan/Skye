@@ -52,16 +52,16 @@ class mock_template_function {
   /**
    * @name Type traits
    */
-  typedef generic_capture_base::pointer value_type;
+  typedef detail::arglist_capture_base::pointer value_type;
   typedef std::vector<value_type> capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
-  typedef std::unique_ptr<returner<return_type>> returner_pointer;
+  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
   //@}
 
   /// Constructor
   mock_template_function()
       : captures_()
-      , returner_(new default_returner<return_type>()) {
+      , returner_(new detail::default_returner<return_type>()) {
   }
 
   /**
@@ -73,9 +73,11 @@ class mock_template_function {
    */
   template<typename... arg_types>
   return_type operator()(arg_types&&... args) {
-    auto t = wrap_args_as_tuple(args...);
+    auto t = detail::wrap_args_as_tuple(args...);
     captures_.push_back(
-        generic_arglist_capture<decltype(t)>::create(std::move(t)));
+        detail::any_tuple_capture<decltype(t)>::create(std::move(t)));
+
+    return returner_->execute();
   }
 
   /**
@@ -90,7 +92,7 @@ class mock_template_function {
     bool const convertible =
         std::is_convertible<value_type, return_type>::value;
 
-    returner_ = create_returner<
+    returner_ = detail::create_returner<
       return_type,object_type,convertible>::create(
           std::forward<object_type>(object));
   }

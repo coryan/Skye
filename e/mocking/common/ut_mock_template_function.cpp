@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE( mock_template_function_void ) {
   function(a, b, c);
   function(a, b, c, d);
 
-  BOOST_REQUIRE_EQUAL(record.call_count(), 3);
+  BOOST_REQUIRE_EQUAL(function.call_count(), 3);
 }
 
 BOOST_AUTO_TEST_CASE( mock_template_function_with_value ) {
@@ -69,11 +69,11 @@ BOOST_AUTO_TEST_CASE( mock_template_function_with_value ) {
   function(a, b, c);
   function(a, b, c, d);
 
-  BOOST_REQUIRE_EQUAL(record.call_count(), 3);
+  BOOST_REQUIRE_EQUAL(function.call_count(), 3);
 }
 
 BOOST_AUTO_TEST_CASE( mock_template_function_void_no_copy ) {
-  invocation_mock function;
+  mock_template_function<void> function;
 
   BOOST_CHECK(not function.has_calls());
   BOOST_CHECK_EQUAL(function.call_count(), 0);
