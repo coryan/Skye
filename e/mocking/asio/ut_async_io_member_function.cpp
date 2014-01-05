@@ -1,4 +1,4 @@
-#include <e/testing/mock_async_io_member_function.hpp>
+#include <e/mocking/asio/async_io_member_function.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/asio/streambuf.hpp>
 
@@ -7,15 +7,17 @@
 // classes are complicated, and we want them to at least compile
 // before we use them in real tests.
 
-BOOST_AUTO_TEST_CASE( mock_async_write_member_function_ctor ) {
-  e::testing::mock_async_write_member_function async_write_some;
+using namespace e::mocking::asio;
+
+BOOST_AUTO_TEST_CASE( async_write_member_function_ctor ) {
+  async_write_member_function async_write_some;
   BOOST_CHECK(not async_write_some.has_calls());
 }
 
-BOOST_AUTO_TEST_CASE( mock_async_write_member_function_with_calls ) {
+BOOST_AUTO_TEST_CASE( async_write_member_function_with_calls ) {
   char const msg[] = "TEST\n";
 
-  e::testing::mock_async_write_member_function amf;
+  async_write_member_function amf;
   int counter = 0;
   std::size_t total_bt = 0;
 
@@ -36,16 +38,16 @@ BOOST_AUTO_TEST_CASE( mock_async_write_member_function_with_calls ) {
   BOOST_CHECK_EQUAL(total_bt, 2);
 }
 
-BOOST_AUTO_TEST_CASE( mock_async_read_member_function_ctor ) {
-  e::testing::mock_async_read_member_function async_read_some;
+BOOST_AUTO_TEST_CASE( async_read_member_function_ctor ) {
+  async_read_member_function async_read_some;
   BOOST_CHECK(not async_read_some.has_calls());
 }
 
-BOOST_AUTO_TEST_CASE( mock_async_read_member_function_with_calls ) {
+BOOST_AUTO_TEST_CASE( async_read_member_function_with_calls ) {
   std::size_t const bufsize = 1024;
   char raw[bufsize];
 
-  e::testing::mock_async_read_member_function amf;
+  async_read_member_function amf;
   int counter = 0;
   std::size_t total_bt = 0;
 

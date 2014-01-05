@@ -1,23 +1,24 @@
-#ifndef escapement_e_testing_mock_async_io_traits_hpp
-#define escapement_e_testing_mock_async_io_traits_hpp
+#ifndef escapement_e_mocking_asio_async_io_traits_hpp
+#define escapement_e_mocking_asio_async_io_traits_hpp
 
 #include <boost/asio/buffer.hpp>
 #include <boost/system/error_code.hpp>
 #include <memory>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace asio {
 
 /**
  * Base class representing the arguments captured during a single
  * invocation to a mock asynchronous write function.
  *
- * @see mock_async_io_member_function for motivation and usage.
+ * @see async_io_member_function for motivation and usage.
  */
-class mock_async_write_arg_capture_base {
+class async_write_arg_capture_base {
  public:
-  typedef std::shared_ptr<mock_async_write_arg_capture_base> pointer;
-  virtual ~mock_async_write_arg_capture_base() = 0;
+  typedef std::shared_ptr<async_write_arg_capture_base> pointer;
+  virtual ~async_write_arg_capture_base() = 0;
 
   virtual void call_handler(
       boost::system::error_code const & ec, std::size_t bt) = 0;
@@ -29,20 +30,20 @@ class mock_async_write_arg_capture_base {
  * Concrete implementation class holding the arguments captured during
  * a single invocation to a mock asynchronous write function.
  *
- * @see mock_async_io_member_function for motivation and usage.
+ * @see async_io_member_function for motivation and usage.
  */
 template<typename buffer_sequence, typename handler>
-class mock_async_write_arg_capture : public mock_async_write_arg_capture_base {
+class async_write_arg_capture : public async_write_arg_capture_base {
  public:
-  typedef mock_async_write_arg_capture_base::pointer base_pointer;
-  mock_async_write_arg_capture() = delete;
-  mock_async_write_arg_capture(mock_async_write_arg_capture const &) = delete;
-  mock_async_write_arg_capture(
+  typedef async_write_arg_capture_base::pointer base_pointer;
+  async_write_arg_capture() = delete;
+  async_write_arg_capture(async_write_arg_capture const &) = delete;
+  async_write_arg_capture(
       buffer_sequence const & bs, handler h)
       : buffers_(bs)
       , handler_(h)
   {}
-  virtual ~mock_async_write_arg_capture() {}
+  virtual ~async_write_arg_capture() {}
 
   virtual void call_handler(
       boost::system::error_code const & ec, std::size_t bt) {
@@ -67,12 +68,12 @@ class mock_async_write_arg_capture : public mock_async_write_arg_capture_base {
  * Base class representing the arguments captured during a single
  * invocation to a mock asynchronous read member function.
  *
- * @see mock_async_io_member_function for motivation and usage.
+ * @see async_io_member_function for motivation and usage.
  */
-class mock_async_read_arg_capture_base {
+class async_read_arg_capture_base {
  public:
-  typedef std::shared_ptr<mock_async_read_arg_capture_base> pointer;
-  virtual ~mock_async_read_arg_capture_base() = 0;
+  typedef std::shared_ptr<async_read_arg_capture_base> pointer;
+  virtual ~async_read_arg_capture_base() = 0;
 
   virtual void call_handler(
       boost::system::error_code const & ec, std::size_t bt) = 0;
@@ -85,15 +86,15 @@ class mock_async_read_arg_capture_base {
  * Concrete implementation class holding the arguments captured during
  * a single invocation to a mock asynchronous read function.
  *
- * @see mock_async_io_member_function for motivation and usage.
+ * @see async_io_member_function for motivation and usage.
  */
 template<typename buffer_sequence, typename handler>
-class mock_async_read_arg_capture
-    : public mock_async_read_arg_capture_base {
+class async_read_arg_capture
+    : public async_read_arg_capture_base {
  public:
-  mock_async_read_arg_capture() = delete;
-  mock_async_read_arg_capture(mock_async_read_arg_capture const &) = delete;
-  mock_async_read_arg_capture(
+  async_read_arg_capture() = delete;
+  async_read_arg_capture(async_read_arg_capture const &) = delete;
+  async_read_arg_capture(
       buffer_sequence const & bs, handler h)
       : buffers_(bs)
       , handler_(h)
@@ -123,36 +124,37 @@ class mock_async_read_arg_capture
 };
 
 /**
- * Define the traits to instantiate a mock_async_write_function
+ * Define the traits to instantiate a async_write_function
  */
-struct mock_async_write_traits {
-  typedef mock_async_write_arg_capture_base::pointer base_pointer;
+struct async_write_traits {
+  typedef async_write_arg_capture_base::pointer base_pointer;
 
   template<typename handler, typename buffer_sequence>
   static base_pointer create(
       handler h, buffer_sequence && bs) {
     return base_pointer(
-        new mock_async_write_arg_capture<buffer_sequence,handler>(
+        new async_write_arg_capture<buffer_sequence,handler>(
             std::forward<buffer_sequence>(bs), h));
   }
 };
 
 /**
- * Define the traits to instantiate a mock_async_read_function
+ * Define the traits to instantiate a async_read_function
  */
-struct mock_async_read_traits {
-  typedef mock_async_read_arg_capture_base::pointer base_pointer;
+struct async_read_traits {
+  typedef async_read_arg_capture_base::pointer base_pointer;
 
   template<typename handler, typename buffer_sequence>
   static base_pointer create(
       handler h, buffer_sequence && bs) {
     return base_pointer(
-        new mock_async_read_arg_capture<buffer_sequence,handler>(
+        new async_read_arg_capture<buffer_sequence,handler>(
             std::forward<buffer_sequence>(bs), h));
   }
 };
 
-} // namespace testing
+} // namespace asio
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_async_io_traits_hpp
+#endif // escapement_e_mocking_asio_async_io_traits_hpp

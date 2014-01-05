@@ -1,10 +1,11 @@
-#ifndef escapement_e_testing_mock_endpoint_hpp
-#define escapement_e_testing_mock_endpoint_hpp
+#ifndef escapement_e_mocking_asio_endpoint_hpp
+#define escapement_e_mocking_asio_endpoint_hpp
 
 #include <iostream>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace asio {
 
 /**
  * Define the endpoint class for the Boost.ASIO mocks.
@@ -34,10 +35,11 @@ class mock_endpoint {
 };
 
 std::ostream & operator<<(std::ostream & os, mock_endpoint const & x) {
-  return os << "endpoint(" << x.value() << ")";
+  return os << "mock_endpoint(" << x.value() << ")";
 }
 
-} // namespace testing
+} // namespace asio
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_service_hpp
+#endif // escapement_e_mocking_asio_service_hpp

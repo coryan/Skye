@@ -1,11 +1,12 @@
-#ifndef escapement_e_testing_mock_async_function_hpp
-#define escapement_e_testing_mock_async_function_hpp
+#ifndef escapement_e_mocking_asio_async_function_hpp
+#define escapement_e_mocking_asio_async_function_hpp
 
 #include <vector>
 #include <utility>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace asio {
 
 /**
  * A class to mock member functions conforming to the boost::asio
@@ -26,9 +27,9 @@ namespace testing {
  *
  * Typically the mocked object will be used as follows:
  *
- * struct some_mocked_class : public e::testing::mock_service {
+ * struct some_mocked_class : public e::mocking::asio::service {
  *
- * mock_async_invocation<...,...> async_operation;
+ * async_function<...,...> async_operation;
  * };
  *
  * some_mocked_class s;
@@ -39,7 +40,7 @@ namespace testing {
  * using:
  *
  * // Call the handler received in the fourth callback...
- * s.async_operator.at(3)->call_handler(1, 2, 3);
+ * s.async_operation.at(3)->call_handler(1, 2, 3);
  * ================================================================
  * 
  * The Turtle mocking library does not seem able to support template
@@ -56,17 +57,17 @@ namespace testing {
  *
  * Boost ASIO asynchronous calls can be characterized by the type of
  * their handler, here we capture this in a traits class that derived
- * classes (such as mock_async_io_function or
- * mock_async_accept_function.
+ * classes (such as async_io_function or
+ * async_accept_function.
  */
 template<typename traits>
-class mock_async_function {
+class async_function {
  public:
   typedef typename traits::base_pointer value_type;
   typedef std::vector<value_type> call_sequence;
   typedef typename call_sequence::const_iterator iterator;
 
-  mock_async_function()
+  async_function()
   {}
 
 
@@ -154,7 +155,8 @@ class mock_async_function {
   call_sequence calls_;
 };
 
-} // namespace testing
+} // namespace asio
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_async_function_hpp
+#endif // escapement_e_mocking_asio_async_function_hpp

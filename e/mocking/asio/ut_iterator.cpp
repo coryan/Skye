@@ -1,24 +1,24 @@
-#include <e/testing/mock_iterator.hpp>
+#include <e/mocking/asio/iterator.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::testing;
+using namespace e::mocking::asio;
 
 BOOST_AUTO_TEST_CASE( mock_iterator_create ) {
-  mock_iterator::resolver_result result;
+  iterator::resolver_result result;
   result.push_back(mock_endpoint("abc"));
   result.push_back(mock_endpoint("bcd"));
   result.push_back(mock_endpoint("cde"));
   result.push_back(mock_endpoint("def"));
 
-  mock_iterator end;
-  BOOST_CHECK(end == mock_iterator());
+  iterator end;
+  BOOST_CHECK(end == iterator());
 
-  mock_iterator i = mock_iterator::create(result);
+  iterator i = iterator::create(result);
   BOOST_CHECK(i != end);
 
   std::string all;
-  for (; i != mock_iterator(); ++i) {
+  for (; i != iterator(); ++i) {
     all += " ";
     all += i->endpoint().value();
   }

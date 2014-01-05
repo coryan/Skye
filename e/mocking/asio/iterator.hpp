@@ -1,17 +1,18 @@
-#ifndef escapement_e_testing_mock_iterator_hpp
-#define escapement_e_testing_mock_iterator_hpp
+#ifndef escapement_e_mocking_asio_iterator_hpp
+#define escapement_e_mocking_asio_iterator_hpp
 
-#include <e/testing/mock_endpoint.hpp>
+#include <e/mocking/asio/endpoint.hpp>
 #include <memory>
 #include <vector>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace asio {
 
 /**
  * Define the iterator class for the Boost.ASIO mocks.
  */
-class mock_iterator {
+class iterator {
  public:
   typedef std::vector<mock_endpoint> resolver_result;
   typedef mock_endpoint value_type;
@@ -20,15 +21,15 @@ class mock_iterator {
   typedef std::ptrdiff_t difference_type;
 
   
-  mock_iterator() 
+  iterator() 
       : shared_()
       , i_()
   {}
-  static mock_iterator create(resolver_result && r) {
-    return mock_iterator(r);
+  static iterator create(resolver_result && r) {
+    return iterator(r);
   }
-  static mock_iterator create(resolver_result const & r) {
-    return mock_iterator(r);
+  static iterator create(resolver_result const & r) {
+    return iterator(r);
   }
 
   value_type const & operator*() const {
@@ -37,17 +38,17 @@ class mock_iterator {
   value_type const * operator->() const {
     return i_.operator->();
   }
-  mock_iterator & operator++() {
+  iterator & operator++() {
     increment();
     return *this;
   }
-  mock_iterator operator++(int) {
-    mock_iterator tmp(*this);
+  iterator operator++(int) {
+    iterator tmp(*this);
     ++*this;
     return *this;
   }
 
-  bool operator==(mock_iterator const & rhs) const {
+  bool operator==(iterator const & rhs) const {
     if (not shared_ && not rhs.shared_) {
       return true;
     }
@@ -56,7 +57,7 @@ class mock_iterator {
     }
     return i_ == rhs.i_;
   }
-  bool operator!=(mock_iterator const & rhs) const {
+  bool operator!=(iterator const & rhs) const {
     return !(*this == rhs);
   }
 
@@ -74,11 +75,11 @@ class mock_iterator {
   }
 
  private:
-  explicit mock_iterator(resolver_result && r)
+  explicit iterator(resolver_result && r)
       : shared_(new resolver_result(r))
       , i_(shared_->begin())
   {}
-  explicit mock_iterator(resolver_result const & r)
+  explicit iterator(resolver_result const & r)
       : shared_(new resolver_result(r))
       , i_(shared_->begin())
   {}
@@ -86,12 +87,13 @@ class mock_iterator {
 
  private:
   typedef std::shared_ptr<resolver_result> contents;
-  typedef resolver_result::const_iterator iterator;
+  typedef resolver_result::const_iterator contents_iterator;
   contents shared_;
-  iterator i_;
+  contents_iterator i_;
 };
 
-} // namespace testing
+} // namespace asio
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_service_hpp
+#endif // escapement_e_mocking_asio_service_hpp
