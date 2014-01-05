@@ -178,8 +178,15 @@ BOOST_AUTO_TEST_CASE( mock_function_member_functions ) {
       std::get<0>(object.f3_capture.at(1)), 7);
 }
 
-BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
+BOOST_AUTO_TEST_CASE( mock_function_check_no_calls ) {
+  mock_function<void(int)> function;
 
+  function.check_called().never();
+  function(42);
+  function.check_called().once();
+}
+
+BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
   mock_function<int(int,std::string)> function;
 
   function.returns( 7 );
@@ -197,16 +204,10 @@ BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
   function.check_called().between( 3, 30 );
   function.check_called().exactly( 12 );
 
-  mock_function<void(int)> f2;
-  f2.check_called().never();
-  f2(42);
-  f2.check_called().once();
-
-
-#if 0
-
   function.check_called().at_least( 3 ).with( 7, std::string("bar" ));
   function.check_called().with( 7, std::string("bar" ));
+
+#if 0
 
   function.check_called().never().with( 77, dont_care );
 

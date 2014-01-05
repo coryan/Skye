@@ -5,10 +5,11 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <list>
 #include <memory>
 #include <string>
 #include <sstream>
-#include <list>
+#include <type_traits>
 
 namespace e {
 namespace mocking {
@@ -65,6 +66,7 @@ namespace detail {
 template<typename sequence_type>
 class report_with_check {
  public:
+  typedef typename sequence_type::value_type value_type;
   typedef std::shared_ptr<validator<sequence_type>> pointer;
 
   report_with_check(
@@ -117,6 +119,24 @@ class report_with_check {
   report_with_check & between(std::size_t min, std::size_t max) {
     return at_least(min).at_most(max);
   }
+
+  /// Filters to only the calls with the given value.
+  template<typename... arg_types>
+  report_with_check & with(arg_types... args) {
+    auto match = detail::wrap_args_as_tuple(args...);
+    static_assert(
+        std::is_convertible<decltype(match),value_type>::value,
+        "Match expression is not convertible to argument capture");
+
+    add_validator(pointer(
+        new equality_filter<sequence_type>(std::move(match))));
+    return *this;
+  }
+  report_with_check & with(value_type && match) {
+    return add_validator(pointer(
+        new equality_filter<sequence_type>(match)));
+  }
+                         
   //@}
 
  private:
