@@ -4,7 +4,7 @@ namespace e {
 namespace mocking {
 namespace asio {
 
-testing::mock_function<void(acceptor*,boost::asio::io_service*)>
+e::mocking::common::mock_function<void(acceptor*,boost::asio::io_service*)>
 acceptor::constructor_mock;
 
 acceptor::~acceptor()

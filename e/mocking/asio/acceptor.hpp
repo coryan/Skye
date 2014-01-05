@@ -26,12 +26,12 @@ class acceptor : public service {
   }
   virtual ~acceptor();
 
-  static e::testing::mock_function<
+  static e::mocking::common::mock_function<
     void(acceptor*,boost::asio::io_service*)> constructor_mock;
 
   async_accept_member_function async_accept;
 
-  e::testing::mock_function<std::string()> local_endpoint;
+  e::mocking::common::mock_function<std::string()> local_endpoint;
 };
 
 } // namespace asio

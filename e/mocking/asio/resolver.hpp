@@ -2,9 +2,9 @@
 #define escapement_e_mocking_asio_resolver_hpp
 
 #include <e/mocking/asio/iterator.hpp>
-#include <e/testing/mock_function.hpp>
-#include <boost/asio/io_service.hpp>
+#include <e/mocking/common/mock_function.hpp>
 
+#include <boost/asio/io_service.hpp>
 #include <vector>
 
 namespace e {
@@ -24,7 +24,7 @@ class resolver : public service {
   typedef e::mocking::asio::iterator iterator;
   typedef iterator::resolver_result resolver_result;
 
-  e::testing::mock_function<iterator(std::string const&)> resolve;
+  e::mocking::common::mock_function<iterator(std::string const&)> resolve;
 };
 
 } // namespace asio

@@ -1,14 +1,15 @@
-#ifndef escapement_e_testing_mock_function_hpp
-#define escapement_e_testing_mock_function_hpp
+#ifndef escapement_e_mocking_common_mock_function_hpp
+#define escapement_e_mocking_common_mock_function_hpp
 
-#include <e/testing/invocation_args_wrapper.hpp>
-#include <e/testing/mock_returner.hpp>
+#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
+#include <e/mocking/common/detail/mock_returner.hpp>
 #include <vector>
 #include <memory>
 #include <utility>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
 
 template<typename T>
 class mock_function;
@@ -54,14 +55,14 @@ class mock_function<return_type(arg_types...)> {
  public:
   mock_function()
       : captures_()
-      , returner_(new default_returner<return_type>()) {
+      , returner_(new detail::default_returner<return_type>()) {
   }
   
-  typedef typename deduce_wrap_args_as_tuple_types<
+  typedef typename detail::deduce_wrap_args_as_tuple_types<
     arg_types...>::tuple value_type;
   typedef std::vector<value_type> capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
-  typedef std::unique_ptr<returner<return_type>> returner_pointer;
+  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
 
   /**
    * Stores the arguments and returns the value provided by the
@@ -71,7 +72,7 @@ class mock_function<return_type(arg_types...)> {
    * user has not set an specific functor or value to return.
    */
   return_type operator()(arg_types... args) {
-    captures_.push_back(wrap_args_as_tuple(args...));
+    captures_.push_back(detail::wrap_args_as_tuple(args...));
     return returner_->execute();
   }
 
@@ -87,7 +88,7 @@ class mock_function<return_type(arg_types...)> {
     bool const convertible =
         std::is_convertible<value_type, return_type>::value;
 
-    returner_ = create_returner<
+    returner_ = detail::create_returner<
       return_type,object_type,convertible>::create(
           std::forward<object_type>(object));
   }
@@ -124,7 +125,8 @@ class mock_function<return_type(arg_types...)> {
   returner_pointer returner_;
 };
 
-} // namespace testing
+} // namespace common
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_function_hpp
+#endif // escapement_e_mocking_common_mock_function_hpp

@@ -1,16 +1,17 @@
-#ifndef escapement_e_testing_mock_template_function_hpp
-#define escapement_e_testing_mock_template_function_hpp
+#ifndef escapement_e_mocking_common_mock_template_function_hpp
+#define escapement_e_mocking_common_mock_template_function_hpp
 
-#include <e/testing/invocation_args_wrapper.hpp>
-#include <e/testing/generic_arglist_capture.hpp>
-#include <e/testing/mock_returner.hpp>
+#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
+#include <e/mocking/common/detail/generic_arglist_capture.hpp>
+#include <e/mocking/common/detail/mock_returner.hpp>
 
 #include <vector>
 #include <memory>
 #include <utility>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
 
 /**
  * Implement a mock template function (standalone or member of a class.)
@@ -44,7 +45,7 @@ namespace testing {
  * }
  * @endcode
  */
-template<class return_type>
+template<typename return_type>
 class mock_template_function {
  public:
   //@{
@@ -126,7 +127,8 @@ class mock_template_function {
   returner_pointer returner_;
 };
 
-} // namespace testing
+} // namespace common
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_template_function_hpp
+#endif // escapement_e_mocking_common_mock_template_function_hpp

@@ -1,12 +1,22 @@
-#ifndef escapement_e_testing_tuple_streaming_hpp
-#define escapement_e_testing_tuple_streaming_hpp
+#ifndef escapement_e_mocking_common_detail_tuple_streaming_hpp
+#define escapement_e_mocking_common_detail_tuple_streaming_hpp
 
 #include <tuple>
 #include <iostream>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
+namespace detail {
 
+/**
+ * Print the contents of a generic tuple using iostream.
+ *
+ * This is a very naive implementation in that it assumes all the
+ * objects have an streaming operator defined, but for types involved
+ * in a unit test this is often safe.
+ * TODO(ES-40)
+ */
 template<typename tuple_t, std::size_t N>
 struct tuple_contents_printer {
   static void print(std::ostream & os, tuple_t const & x) {
@@ -15,6 +25,9 @@ struct tuple_contents_printer {
   }
 };
 
+/**
+ * Partial specialization for tuples with a single element.
+ */
 template<typename tuple_t>
 struct tuple_contents_printer<tuple_t,1> {
   static void print(std::ostream & os, tuple_t const & x) {
@@ -22,26 +35,34 @@ struct tuple_contents_printer<tuple_t,1> {
   }
 };
 
+/**
+ * Partial specialization for empty tuples.
+ */
 template<typename tuple_t>
 struct tuple_contents_printer<tuple_t,0> {
   static void print(std::ostream & , tuple_t const & ) {
   }
 };
 
-} // namespace testing
+} // namespace detail
+} // namespace common
+} // namespace mocking
 } // namespace e
 
 namespace std {
 
+/**
+ * Introduce a streaming operator for all tuples.
+ */
 template<typename... args>
 ostream & operator<<(
     ostream & os, tuple<args...> const & x) {
   os << "<";
-  e::testing::tuple_contents_printer<
+  e::mocking::common::detail::tuple_contents_printer<
     tuple<args...>, sizeof...(args)>::print(os, x);
   return os << ">";
 }
 
 } // namespace std
 
-#endif // escapement_e_testing_tuple_streaming_hpp
+#endif // escapement_e_mocking_common_detail_tuple_streaming_hpp

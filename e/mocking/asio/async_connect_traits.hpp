@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_asio_async_connect_traits_hpp
 #define escapement_e_mocking_asio_async_connect_traits_hpp
 
-#include <e/testing/invocation_args_wrapper.hpp>
+#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
 #include <boost/system/error_code.hpp>
 #include <memory>
 
@@ -69,7 +69,7 @@ struct async_connect_traits {
 
   template<typename handler, typename... args>
   static base_pointer create(handler h, args&&... a) {
-    auto t = e::testing::wrap_args_as_tuple(a...);
+    auto t = e::mocking::common::detail::wrap_args_as_tuple(a...);
     return base_pointer(
         new async_connect_arg_capture<handler,decltype(t)>(
             h, std::move(t)));

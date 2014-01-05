@@ -1,10 +1,12 @@
-#ifndef escapement_e_testing_generic_arglist_capture_hpp
-#define escapement_e_testing_generic_arglist_capture_hpp
+#ifndef escapement_e_mocking_common_detail_generic_arglist_capture_hpp
+#define escapement_e_mocking_common_detail_generic_arglist_capture_hpp
 
 #include <memory>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
+namespace detail {
 
 /**
  * Represent a capture where the types were not known at compile time,
@@ -43,7 +45,9 @@ class any_tuple_capture : public arglist_capture_base {
   value_type args_;
 };
 
-} // namespace testing
+} // namespace detail
+} // namespace common
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_generic_arglist_capture_hpp
+#endif // escapement_e_mocking_common_detail_generic_arglist_capture_hpp

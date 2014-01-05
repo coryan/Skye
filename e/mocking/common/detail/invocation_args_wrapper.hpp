@@ -1,5 +1,5 @@
-#ifndef escapement_e_testing_invocation_args_wrapper_hpp
-#define escapement_e_testing_invocation_args_wrapper_hpp
+#ifndef escapement_e_mocking_common_detail_invocation_args_wrapper_hpp
+#define escapement_e_mocking_common_detail_invocation_args_wrapper_hpp
 
 #include <tuple>
 #include <type_traits>
@@ -9,7 +9,9 @@
 // Please read the documentation for make_arg_wrapper() for an
 // explanation of what is going on here.
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
+namespace detail {
 
 template<typename T, bool copy_constructible>
 struct argument_wrapper;
@@ -95,7 +97,9 @@ wrap_args_as_tuple(args&&... a) {
       forward_wrapper(a)...);
 }
 
-} // namespace testing
+} // namespace detail
+} // namespace common
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_invocation_args_wrapper_hpp
+#endif // escapement_e_mocking_common_detail_invocation_args_wrapper_hpp

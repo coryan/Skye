@@ -1,9 +1,9 @@
-#include <e/testing/mock_function.hpp>
-#include <e/testing/tuple_streaming.hpp>
+#include <e/mocking/common/mock_function.hpp>
+#include <e/mocking/common/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::testing;
+using namespace e::mocking::common;
 
 BOOST_AUTO_TEST_CASE( mock_function_void ) {
   mock_function<void(int,int)> function;

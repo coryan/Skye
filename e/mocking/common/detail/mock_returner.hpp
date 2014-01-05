@@ -1,12 +1,14 @@
-#ifndef escapement_e_testing_mock_returner_hpp
-#define escapement_e_testing_mock_returner_hpp
+#ifndef escapement_e_mocking_common_detail_mock_returner_hpp
+#define escapement_e_mocking_common_detail_mock_returner_hpp
 
 #include <memory>
 #include <stdexcept>
 #include <string>
 
 namespace e {
-namespace testing {
+namespace mocking {
+namespace common {
+namespace detail {
 
 template<typename return_type>
 class returner {
@@ -109,7 +111,9 @@ struct create_returner<return_value,object_type,false> {
   }
 };
 
-} // namespace testing
+} // namespace detail
+} // namespace common
+} // namespace mocking
 } // namespace e
 
-#endif // escapement_e_testing_mock_returner_hpp
+#endif // escapement_e_mocking_common_detail_mock_returner_hpp
