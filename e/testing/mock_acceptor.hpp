@@ -18,16 +18,12 @@ class mock_acceptor : public mock_service {
   }
   virtual ~mock_acceptor() = 0;
 
-  static invocation<mock_acceptor*,boost::asio::io_service*> constructor_mock;
+  static mock_function<
+    void(mock_acceptor*,boost::asio::io_service*)> constructor_mock;
 
   mock_async_accept_member_function async_accept;
 
-  //@{
-  /**
-   * @name Guidelines for the Turtle mocking framework
-   */
-  virtual std::string local_endpoint() = 0;
-  //@}
+  mock_function<std::string()> local_endpoint;
 };
 
 } // namespace testing

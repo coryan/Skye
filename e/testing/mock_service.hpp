@@ -1,7 +1,7 @@
 #ifndef escapement_e_testing_mock_service_hpp
 #define escapement_e_testing_mock_service_hpp
 
-#include <e/testing/invocation.hpp>
+#include <e/testing/mock_function.hpp>
 #include <boost/asio/io_service.hpp>
 
 namespace e {
@@ -22,8 +22,8 @@ class mock_service : public boost::asio::io_service::service {
       : boost::asio::io_service::service(io)
   {}
 
-  invocation<boost::asio::io_service::fork_event> fork_service_mock;
-  invocation<> shutdown_service_mock;
+  mock_function<void(boost::asio::io_service::fork_event)> fork_service_capture;
+  mock_function<void()> shutdown_service_capture;
 
  private:
   virtual void fork_service(

@@ -1,8 +1,10 @@
-#ifndef escapement_e_testing_mock_function_hpp
-#define escapement_e_testing_mock_function_hpp
+#ifndef escapement_e_testing_mock_template_function_hpp
+#define escapement_e_testing_mock_template_function_hpp
 
 #include <e/testing/invocation_args_wrapper.hpp>
+#include <e/testing/generic_arglist_capture.hpp>
 #include <e/testing/mock_returner.hpp>
+
 #include <vector>
 #include <memory>
 #include <utility>
@@ -10,58 +12,56 @@
 namespace e {
 namespace testing {
 
-template<typename T>
-class mock_function;
-
 /**
- * Implement a mock function (standalone or member of a class.)
+ * Implement a mock template function (standalone or member of a class.)
  *
  * This class is intented to support writing unit tests with mocked
- * objects and functions.  Typically one would define a member
- * variable with the name of the function to be mocked:
+ * objects and functions, but where the mocked function itself is a
+ * template.  Typically one would define a member variable with the
+ * name of the function to be mocked:
  *
  * @code
  * class my_mock_class : ... {
- *   // define a couple of mock functions
- *   mock_function<int(std::string const&, std::string &)> f1;
- *   mock_function<void(int,int,int)> f2;
- *
- *   // ugly virtual function
- *   virtual std::string f3(int x, char const *y) {
- *     return f3_capture(x, y);
- *   }
- *   mock_function<std::string(int,char const*)> f3_capture;
+ *   // define a template member function, returning void.
+ *   mock_template_function<void> f1;
+ *   // define a template member function, returning int.
+ *   mock_template_function<int> f2;
  * };
  *
- * void test_foo(foo & f) {
+ * void test_foo() {
  *   my_mock_class x;
- *   // f1 and f3 need to define return values, but not f2...
- *   f1.returns( 42 );
- *   f3.returns( []() { return std::string("foo"); }
- *   // ... code here can call x.f1(), x.f2(), x.f3()
- *   f.use(x);
+ *   // f1 does not need to define a return value before it is called:
+ *   f1( int(42), true );
+ *   f1( std::string("abc"), std::vector<int>(), long(42), false );
+ *
+ *   // f2 does require a return value, but it is easy to set:
+ *   f2.returns( 7 );
+ *   f2( int(42), true );
+ *   f2( std::string("abc"), std::vector<int>(), long(42), false );
  *   // ... code here can check that the mock object was called
- *   // corrrectly.  Admittedly the facilities are poor, but this is
- *   // work in progress.
+ *   // corrrectly.  Well, poorly, the captures are really hard to use
  *   assert(f2.call_count() == 7);
- *   assert(f1.call_count() >= 1);
- *   assert(std::get<0>(f1.at(0)) == 42);
  * }
  * @endcode
  */
-template<typename return_type, typename... arg_types>
-class mock_function<return_type(arg_types...)> {
+template<class return_type>
+class mock_template_function {
  public:
-  mock_function()
-      : captures_()
-      , returner_(new default_returner<return_type>()) {
-  }
-  
-  typedef typename deduce_wrap_args_as_tuple_types<
-    arg_types...>::tuple value_type;
+  //@{
+  /**
+   * @name Type traits
+   */
+  typedef generic_capture_base::pointer value_type;
   typedef std::vector<value_type> capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
   typedef std::unique_ptr<returner<return_type>> returner_pointer;
+  //@}
+
+  /// Constructor
+  mock_template_function()
+      : captures_()
+      , returner_(new default_returner<return_type>()) {
+  }
 
   /**
    * Stores the arguments and returns the value provided by the
@@ -70,9 +70,11 @@ class mock_function<return_type(arg_types...)> {
    * For non-void return types, this operator raises an error if the
    * user has not set an specific functor or value to return.
    */
-  return_type operator()(arg_types... args) {
-    captures_.push_back(wrap_args_as_tuple(args...));
-    return returner_->execute();
+  template<typename... arg_types>
+  return_type operator()(arg_types&&... args) {
+    auto t = wrap_args_as_tuple(args...);
+    captures_.push_back(
+        generic_arglist_capture<decltype(t)>::create(std::move(t)));
   }
 
   /**
@@ -127,4 +129,4 @@ class mock_function<return_type(arg_types...)> {
 } // namespace testing
 } // namespace e
 
-#endif // escapement_e_testing_mock_function_hpp
+#endif // escapement_e_testing_mock_template_function_hpp
