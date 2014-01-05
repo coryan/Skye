@@ -94,17 +94,7 @@ class mock_function<return_type(arg_types...)> {
           std::forward<object_type>(object));
   }
 
-  /**
-   * Use BOOST_CHECK_* validation for a validation expression.
-   *
-   * The use of a macro here is required to capture the file and line
-   * number.  We are allowing a macro with a short name because this
-   * is intended to be used in test code only, so any namespace
-   * pollution can be kept under control.
-   */
-# define check_called() check(ESCAPEMENT_MOCK_LOCATION)
-
-  /// Use BOOST_CHECK_* validation.
+  /// Use BOOST_CHECK_* semantics for validation.
   detail::report_with_check<capture_sequence>
   check(detail::location const & where) {
     return detail::report_with_check<capture_sequence>(captures_, where);

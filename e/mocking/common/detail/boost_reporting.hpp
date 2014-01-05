@@ -155,7 +155,7 @@ class report_with_check {
       i->filter(sequence);
     }
 
-    validation_result r;
+    validation_result r{true,false,std::string()};
     std::string msg = "check_called()";
     for (auto i : validators_) {
       r = i->validate(sequence);
@@ -181,6 +181,16 @@ class report_with_check {
   sequence_type sequence_;
   location where_;
 };
+
+/**
+ * Validate using BOOST_CHECK_* semantics, i.e., errors are not fatal.
+ *
+ * The use of a macro here is required to capture the file and line
+ * number.  We are allowing a macro with a short name because this
+ * is intended to be used in test code only, so any namespace
+ * pollution can be kept under control.
+ */
+#define check_called() check(ESCAPEMENT_MOCK_LOCATION)
 
 } // namespace detail
 } // namespace common

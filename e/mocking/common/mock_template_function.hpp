@@ -4,6 +4,7 @@
 #include <e/mocking/common/detail/invocation_args_wrapper.hpp>
 #include <e/mocking/common/detail/generic_arglist_capture.hpp>
 #include <e/mocking/common/detail/mock_returner.hpp>
+#include <e/mocking/common/detail/boost_reporting.hpp>
 
 #include <vector>
 #include <memory>
@@ -95,6 +96,12 @@ class mock_template_function {
     returner_ = detail::create_returner<
       return_type,object_type,convertible>::create(
           std::forward<object_type>(object));
+  }
+
+  /// Use BOOST_CHECK_* semantics for validation.
+  detail::report_with_check<capture_sequence>
+  check(detail::location const & where) {
+    return detail::report_with_check<capture_sequence>(captures_, where);
   }
 
   //@{

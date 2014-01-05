@@ -87,3 +87,32 @@ BOOST_AUTO_TEST_CASE( mock_template_function_void_no_copy ) {
 
   BOOST_REQUIRE_EQUAL(function.call_count(), 2);
 }
+
+BOOST_AUTO_TEST_CASE( mock_template_function_check_no_calls ) {
+  mock_template_function<void> function;
+
+  function.check_called().never();
+  function(42);
+  function.check_called().once();
+}
+
+BOOST_AUTO_TEST_CASE( mock_template_function_asserts ) {
+  mock_template_function<int> function;
+
+  function.returns( 7 );
+
+  function(42, std::string("foo"));
+  function(42, std::string("foo"));
+  function(42, std::string("foo"));
+  function(42, std::string("foo"), 3, 1);
+  function(std::string("foo"), std::string("bar"));
+
+  function.check_called();
+  function.check_called().at_least( 2 );
+  function.check_called().at_least( 2 ).at_most( 30 );
+  function.check_called().between( 3, 30 );
+  function.check_called().exactly( 5 );
+
+  //  function.check_called().at_least( 3 ).with( 7, std::string("bar" ));
+  //function.check_called().with( 7, std::string("bar" ));
+}
