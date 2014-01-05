@@ -1,6 +1,8 @@
 #ifndef escapement_e_mocking_common_detail_validator_hpp
 #define escapement_e_mocking_common_detail_validator_hpp
 
+#include <e/mocking/common/detail/tuple_streaming.hpp>
+
 #include <algorithm>
 #include <string>
 #include <sstream>
@@ -60,8 +62,7 @@ struct validation_result {
    * @name comparison operators for testing
    */
   bool operator==(validation_result const & rhs) const {
-    return (pass == rhs.pass and short_circuit == rhs.short_circuit
-            and msg == rhs.msg);
+    return (pass == rhs.pass and short_circuit == rhs.short_circuit);
   }
   bool operator!=(validation_result const & rhs) const {
     return !(*this == rhs);
@@ -134,7 +135,9 @@ class at_least_validator : public validator<sequence_type> {
       sequence_type const & sequence) const override {
     std::size_t size = sequence.size();
     if (size >= min_) {
-      return validation_result{true, false, std::string()};
+      std::ostringstream os;
+      os << ".at_least( " << min_ << " )";
+      return validation_result{true, false, os.str()};
     }
     std::ostringstream os;
     os << "failed validation, expected at least " 
@@ -164,7 +167,9 @@ class at_most_validator : public validator<sequence_type> {
       sequence_type const & sequence) const override {
     std::size_t size = sequence.size();
     if (size <= max_) {
-      return validation_result{true, false, std::string()};
+      std::ostringstream os;
+      os << ".at_most( " << max_ << " )";
+      return validation_result{true, false, os.str()};
     }
     std::ostringstream os;
     os << "failed validation, expected at most " 
@@ -197,7 +202,13 @@ class exactly_validator : public validator<sequence_type> {
       sequence_type const & sequence) const override {
     std::size_t size = sequence.size();
     if (size == expected_) {
-      return validation_result{true, short_circuit, std::string()};
+      std::ostringstream os;
+      if (short_circuit && expected_ == 0) {
+        os << ".never()";
+      } else {
+        os << ".exactly( " << expected_ << " )";
+      }
+      return validation_result{true, short_circuit, os.str()};
     }
     std::ostringstream os;
     os << "failed validation, expected exactly " 
@@ -236,7 +247,9 @@ class equality_filter : public validator<sequence_type> {
   }
   validation_result validate(
       sequence_type const & ) const override {
-    return validation_result{true, false, std::string()};
+    std::ostringstream os;
+    os << ".with( " << match_ << " )";
+    return validation_result{true, false, os.str()};
   }
   
  private:

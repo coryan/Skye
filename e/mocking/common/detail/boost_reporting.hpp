@@ -145,6 +145,9 @@ class report_with_check {
   }
 
   void validate() {
+    boost::unit_test::unit_test_log.set_checkpoint(
+        where_.file, where_.line);
+
     sequence_type sequence;
     sequence.swap(sequence_); // We no longer need the contents of sequence_
 
@@ -153,24 +156,24 @@ class report_with_check {
     }
 
     validation_result r;
+    std::string msg = "check_called()";
     for (auto i : validators_) {
       r = i->validate(sequence);
+      msg += r.msg;
       if (not r.pass or r.short_circuit) {
         break;
       }
     }
-    if (r.pass) {
-      boost::unit_test::unit_test_log.set_checkpoint(
-          where_.file, where_.line);
-    } else {
-      boost::unit_test::framework::assertion_result( false );
-      boost::unit_test::unit_test_log
-          << boost::unit_test::log::begin(
-              where_.file, where_.line)
-          << boost::unit_test::log_all_errors
-          << r.msg
-          << boost::unit_test::log::end();
+    auto ll = boost::unit_test::log_successful_tests;
+    if (not r.pass) {
+      ll = boost::unit_test::log_all_errors;
     }
+    boost::unit_test::framework::assertion_result( r.pass );
+    boost::unit_test::unit_test_log
+        << boost::unit_test::log::begin(
+            where_.file, where_.line)
+        << ll << msg
+        << boost::unit_test::log::end();
   }
 
  private:
