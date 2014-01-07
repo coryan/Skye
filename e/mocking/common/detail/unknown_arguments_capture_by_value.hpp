@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_detail_generic_arglist_capture_hpp
-#define escapement_e_mocking_common_detail_generic_arglist_capture_hpp
+#ifndef escapement_e_mocking_common_detail_unknown_arguments_capture_by_value_hpp
+#define escapement_e_mocking_common_detail_unknown_arguments_capture_by_value_hpp
 
 #include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <e/mocking/common/detail/tuple_streaming.hpp>
@@ -127,4 +127,4 @@ struct unknown_arguments_capture_by_value {
 } // namespace mocking
 } // namespace e
 
-#endif // escapement_e_mocking_common_detail_generic_arglist_capture_hpp
+#endif // escapement_e_mocking_common_detail_unknown_arguments_capture_by_value_hpp

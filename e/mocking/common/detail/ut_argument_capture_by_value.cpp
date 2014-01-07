@@ -1,5 +1,4 @@
 #include <e/mocking/common/detail/argument_wrapper.hpp>
-#include <e/mocking/common/detail/generic_arglist_capture.hpp>
 #include <e/mocking/common/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
