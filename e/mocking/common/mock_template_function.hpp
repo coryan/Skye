@@ -45,8 +45,16 @@ namespace common {
  *   assert(f2.call_count() == 7);
  * }
  * @endcode
+ *
+ * @tparam return_type the return type from the mock function.
+ * @tparam capture_strategy define how arguments are to be captured,
+ *   and to some degree the capabilities available to operate on the
+ *   arguments. The type must meet the
+ *   detail::capture_strategy_requirements interface.
  */
-template<typename return_type>
+template<
+  typename return_type,
+  typename capture_strategy = detail::unknown_arguments_capture_by_value>
 class mock_template_function {
  public:
   //@{
