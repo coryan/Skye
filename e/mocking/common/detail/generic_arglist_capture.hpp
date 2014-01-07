@@ -90,7 +90,7 @@ class unknown_arguments_by_value_holder_tuple
 /**
  * Define a strategy to capture arguments in mock functions.
  *
- * Hold each capture in an object (@ref arguments_by_value_holder_tuple)
+ * Hold each capture in an object (@ref unknown_arguments_by_value_holder_tuple)
  * which is a template class, parametric on the tuple used to hold the
  * arguments.  The class inherits from arguments_by_value_holder, and
  * provides virtual functions to print the values, count the
@@ -98,8 +98,8 @@ class unknown_arguments_by_value_holder_tuple
  * functions are used in the implementation of check_called() and its
  * related assertion Mock.
  *
- * @see arguments_by_value_holder_tuple
- * @see arguments_by_value_holder
+ * @see unknown_arguments_by_value_holder_tuple
+ * @see unknown_arguments_by_value_holder
  * @see report_with_check
  * @see capture:strategy:motivation
  */
