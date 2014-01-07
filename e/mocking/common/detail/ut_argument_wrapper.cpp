@@ -1,8 +1,106 @@
 #include <e/mocking/common/detail/argument_wrapper.hpp>
+#include <e/mocking/common/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 
 using namespace e::mocking::common::detail;
+
+/**
+ * Implement simple types to drive the tests.
+ */
+namespace {
+/**
+ * A non-copy-constructible class (i.e., one where std::is_copyable<>
+ * returns false), to test how such arguments are wrapped.
+ */
+struct no_copy {
+  no_copy(no_copy const &) = delete;
+  no_copy()
+      : value(42)
+  {}
+  explicit no_copy(int x)
+      : value(x)
+  {}
+
+  bool operator==(int rhs) const {
+    return value == rhs;
+  }
+  bool operator!=(int rhs) const {
+    return !(*this == rhs);
+  }
+  bool operator==(no_copy const & rhs) const {
+    return value == rhs.value;
+  }
+  bool operator!=(no_copy const & rhs) const {
+    return !(*this == rhs);
+  }
+
+  int value;
+};
+
+/**
+ * The streaming operator for no_copy
+ */
+std::ostream & operator<<(std::ostream & os, no_copy const & x) {
+  return os << "no_copy{value=" << x.value << "}";
+}
+
+/**
+ * A class without a streaming operator, i.e., one where the following
+ * code snippet would fail to compile:
+ *
+ * @code
+ * void function(std::ostream & os, no_stream const & x) {
+ *   os << x;
+ * }
+ * @endcode
+ */
+struct no_stream {
+  no_stream(no_stream const &) = default;
+  no_stream& operator=(no_stream const &) = default;
+  no_stream() = default;
+  explicit no_stream(int x)
+      : value(x)
+  {}
+
+  bool operator==(int rhs) const {
+    return value == rhs;
+  }
+  bool operator!=(int rhs) const {
+    return !(*this == rhs);
+  }
+  bool operator==(no_stream const & rhs) const {
+    return value == rhs.value;
+  }
+  bool operator!=(no_stream const & rhs) const {
+    return !(*this == rhs);
+  }
+
+  int value;
+};
+
+/**
+ * A class without equality and inequality operators.
+ */
+struct no_compare {
+  no_compare(no_compare const &) = default;
+  no_compare& operator=(no_compare const &) = default;
+  no_compare() = default;
+  explicit no_compare(int x)
+      : value(x)
+  {}
+
+  int value;
+};
+
+/**
+ * The streaming operator for no_compare.
+ */
+std::ostream & operator<<(std::ostream & os, no_compare const & x) {
+  return os << x.value;
+}
+
+} // anonymous namespace
 
 BOOST_AUTO_TEST_CASE( argument_wrapper_int ) {
   int x = 5;
@@ -34,30 +132,23 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_string ) {
   BOOST_CHECK_EQUAL(os.str(), "foo bar baz");
 }
 
-struct no_copy {
-  no_copy(no_copy const &) = delete;
-  explicit no_copy(int x)
-      : value(x)
-  {}
+BOOST_AUTO_TEST_CASE( argument_wrapper_copy_references ) {
+  using namespace e::mocking::common::detail;
 
-  bool operator==(int rhs) const {
-    return value == rhs;
-  }
-  bool operator!=(int rhs) const {
-    return !(*this == rhs);
-  }
-  bool operator==(no_copy const & rhs) const {
-    return value == rhs.value;
-  }
-  bool operator!=(no_copy const & rhs) const {
-    return !(*this == rhs);
-  }
+  int a = 1;
+  int & b = a;
+  int const & c = b;
 
-  int value;
-};
+  BOOST_CHECK_EQUAL(argument_traits<decltype(a)>::copyable, true);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(b)>::copyable, true);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(c)>::copyable, true);
 
-std::ostream & operator<<(std::ostream & os, no_copy const & x) {
-  return os << x.value;
+  int x = make_arg_wrapper(a);
+  BOOST_CHECK_EQUAL(x, a);
+  int y = make_arg_wrapper(b);
+  BOOST_CHECK_EQUAL(y, a);
+  int z = make_arg_wrapper(c);
+  BOOST_CHECK_EQUAL(z, a);
 }
 
 BOOST_AUTO_TEST_CASE( argument_wrapper_no_copy ) {
@@ -72,30 +163,6 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_no_copy ) {
   BOOST_CHECK_EQUAL(os.str(), "[::place_holder::]");
 }
 
-struct no_stream {
-  no_stream(no_stream const &) = default;
-  no_stream& operator=(no_stream const &) = default;
-  no_stream() = default;
-  explicit no_stream(int x)
-      : value(x)
-  {}
-
-  bool operator==(int rhs) const {
-    return value == rhs;
-  }
-  bool operator!=(int rhs) const {
-    return !(*this == rhs);
-  }
-  bool operator==(no_stream const & rhs) const {
-    return value == rhs.value;
-  }
-  bool operator!=(no_stream const & rhs) const {
-    return !(*this == rhs);
-  }
-
-  int value;
-};
-
 BOOST_AUTO_TEST_CASE( argument_wrapper_no_stream ) {
   no_stream x(42);
 
@@ -107,21 +174,6 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_no_stream ) {
   std::ostringstream os;
   os << w1;
   BOOST_CHECK_EQUAL(os.str(), "[::non_streamable::]");
-}
-
-struct no_compare {
-  no_compare(no_compare const &) = default;
-  no_compare& operator=(no_compare const &) = default;
-  no_compare() = default;
-  explicit no_compare(int x)
-      : value(x)
-  {}
-
-  int value;
-};
-
-std::ostream & operator<<(std::ostream & os, no_compare const & x) {
-  return os << x.value;
 }
 
 BOOST_AUTO_TEST_CASE( argument_wrapper_no_compare ) {
@@ -138,4 +190,71 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_no_compare ) {
   std::ostringstream os;
   os << w1;
   BOOST_CHECK_EQUAL(os.str(), "42");
+}
+
+BOOST_AUTO_TEST_CASE( tuple_streaming_empty ) {
+  std::tuple<> empty;
+  std::ostringstream os;
+  os << empty;
+  BOOST_CHECK_EQUAL(os.str(), "<>");
+}
+
+BOOST_AUTO_TEST_CASE( tuple_streaming_single ) {
+  std::tuple<int> single(42);
+  std::ostringstream os;
+  os << single;
+  BOOST_CHECK_EQUAL(os.str(), "<42>");
+}
+
+BOOST_AUTO_TEST_CASE( tuple_streaming_triple ) {
+  std::tuple<int,std::string,std::string> x(42, "x", "y");
+  std::ostringstream os;
+  os << x;
+  BOOST_CHECK_EQUAL(os.str(), "<42,x,y>");
+}
+
+BOOST_AUTO_TEST_CASE( wrap_simple_args ) {
+  using namespace e::mocking::common::detail;
+
+  auto w = wrap_args_as_tuple(1, 2, 3, std::string("42"));
+  std::ostringstream os;
+  os << w;
+  BOOST_CHECK_EQUAL(os.str(), "<1,2,3,42>");
+}
+
+BOOST_AUTO_TEST_CASE( wrap_simple_ref_args ) {
+  using namespace e::mocking::common::detail;
+
+  int x = 1;
+  int y = 2;
+  int & a = x;
+  int const & b = y;
+  std::string const c("abc");
+  std::string const & d = c;
+
+  auto w = wrap_args_as_tuple(a, b, c, d, c, b, a);
+  std::ostringstream os;
+  os << w;
+  BOOST_CHECK_EQUAL(os.str(), "<1,2,abc,abc,abc,2,1>");
+}
+
+BOOST_AUTO_TEST_CASE( wrap_no_copy ) {
+  using namespace e::mocking::common::detail;
+
+  no_copy a;
+  no_copy & b = a;
+
+  {
+    std::ostringstream os;
+    os << b;
+    BOOST_CHECK_EQUAL(os.str(), "no_copy{value=42}");
+  }
+
+  no_copy const & c = a;
+  auto w = wrap_args_as_tuple(a, b, c, 1, 2);
+  std::ostringstream os;
+  os << w;
+  BOOST_CHECK_EQUAL(os.str(),
+                    "<[::place_holder::],[::place_holder::]"
+                    ",[::place_holder::],1,2>");
 }

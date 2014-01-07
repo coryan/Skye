@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_asio_async_accept_traits_hpp
 #define escapement_e_mocking_asio_async_accept_traits_hpp
 
-#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
+#include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <boost/system/error_code.hpp>
 #include <memory>
 

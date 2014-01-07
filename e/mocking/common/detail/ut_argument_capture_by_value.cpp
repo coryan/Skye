@@ -1,6 +1,6 @@
 #include <e/mocking/common/detail/argument_capture_by_value.hpp>
+#include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <e/mocking/common/detail/generic_arglist_capture.hpp>
-#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
 #include <e/mocking/common/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>

@@ -2,6 +2,7 @@
 #define escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
 
 #include <iostream>
+#include <tuple>
 #include <type_traits>
 
 namespace e {
@@ -176,6 +177,9 @@ struct argument_wrapper_type<T,false> {
   typedef place_holder type;
 };
 
+/**
+ * A traits class describe how an argument is wrapped.
+ */
 template<typename T>
 struct argument_traits {
   typedef typename std::remove_reference<T>::type base_type;
@@ -186,14 +190,38 @@ struct argument_traits {
 template<typename T>
 bool const argument_traits<T>::copyable;
 
+/**
+ * Wrap an argument in the correct type, using perfect forwarding.
+ */
 template<typename T>
 typename argument_traits<T>::type make_arg_wrapper(T && t) {
   return typename argument_traits<T>::type(std::forward<T>(t));
 }
 
+/**
+ * Wrap an argument in the correct type, based on a const reference.
+ */
 template<typename T>
 typename argument_traits<T>::type make_arg_wrapper(T const & t) {
   return typename argument_traits<T>::type(t);
+}
+
+/**
+ * Forward a single argument to make_ar_wrapper function.
+ */
+template<typename T>
+auto forward_wrapper(T && arg)
+    -> decltype(make_arg_wrapper(std::forward<T>(arg))) {
+  return make_arg_wrapper(std::forward<T>(arg));
+}
+
+/**
+ * Wrap a list of arguments into a tuple using make_arg_wrapper() for each one.
+ */
+template<typename... args>
+auto wrap_args_as_tuple(args&&... a)
+    -> decltype(std::make_tuple(forward_wrapper(a)...)) {
+  return std::make_tuple(forward_wrapper(a)...);
 }
 
 } // namespace detail

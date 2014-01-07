@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_common_mock_template_function_hpp
 #define escapement_e_mocking_common_mock_template_function_hpp
 
-#include <e/mocking/common/detail/invocation_args_wrapper.hpp>
+#include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <e/mocking/common/detail/generic_arglist_capture.hpp>
 #include <e/mocking/common/detail/mock_returner.hpp>
 #include <e/mocking/common/detail/boost_reporting.hpp>
