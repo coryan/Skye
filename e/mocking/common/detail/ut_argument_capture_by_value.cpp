@@ -292,12 +292,12 @@ class async_functor_capture_by_value<return_type(arg_types...)>
 void do_stuff(int x, int y) {}
 
 BOOST_AUTO_TEST_CASE( test_async_functor_holder ) {
+#if 0
   typedef async_functor_capture_by_value<void(int,int)> capture;
 
   std::string a("a"), b("b"), c("c"), d("d");
   auto c1 = capture::capture(a, b, [](int x, int y) { do_stuff(x, y); });
   BOOST_CHECK_EQUAL(c1->argument_count(), 3);
-#if 0
 
   int x = 0;
   auto c2 = capture::capture(a, b, c, [&x](int a, int b) { x = a + b; });
