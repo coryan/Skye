@@ -61,7 +61,7 @@ class mock_template_function {
   /**
    * @name Type traits
    */
-  typedef detail::arglist_capture_base::pointer value_type;
+  typedef typename capture_strategy::value_type value_type;
   typedef std::vector<value_type> capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
   typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
@@ -82,10 +82,7 @@ class mock_template_function {
    */
   template<typename... arg_types>
   return_type operator()(arg_types&&... args) {
-    auto t = detail::wrap_args_as_tuple(args...);
-    captures_.push_back(
-        detail::any_tuple_capture<decltype(t)>::create(std::move(t)));
-
+    captures_.push_back(capture_strategy::capture(args...));
     return returner_->execute();
   }
 
