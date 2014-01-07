@@ -219,8 +219,7 @@ class async_functor_holder_generic<tuple_type, return_type(functor_args...)>
 template<typename... arg_types>
 class known_arguments_capture_by_value {
  public:
-  typedef typename deduce_wrap_args_as_tuple_types<
-    arg_types...>::tuple value_type;
+  typedef decltype(wrap_args_as_tuple(std::declval<arg_types>()...)) value_type;
 
   static value_type capture(arg_types&&... args) {
     return wrap_args_as_tuple(args...);

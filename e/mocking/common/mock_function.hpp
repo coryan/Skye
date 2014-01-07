@@ -59,8 +59,8 @@ class mock_function<return_type(arg_types...)> {
       , returner_(new detail::default_returner<return_type>()) {
   }
   
-  typedef typename detail::deduce_wrap_args_as_tuple_types<
-    arg_types...>::tuple value_type;
+  typedef decltype(
+      detail::wrap_args_as_tuple(std::declval<arg_types>()...)) value_type;
   typedef std::vector<value_type> capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
   typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;

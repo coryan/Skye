@@ -57,9 +57,9 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_copy_constructible ) {
   int & b = a;
   int const & c = b;
 
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(a)>::copyable, true);
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(b)>::copyable, true);
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(c)>::copyable, true);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(a)>::copyable, true);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(b)>::copyable, true);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(c)>::copyable, true);
 
   int x = make_arg_wrapper(a);
   BOOST_CHECK_EQUAL(x, a);
@@ -76,17 +76,17 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_no_copy ) {
   test_no_copy & b = a;
   test_no_copy const & c = b;
 
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(a)>::copyable, false);
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(b)>::copyable, false);
-  BOOST_CHECK_EQUAL(wrap_arg<decltype(c)>::copyable, false);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(a)>::copyable, false);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(b)>::copyable, false);
+  BOOST_CHECK_EQUAL(argument_traits<decltype(c)>::copyable, false);
 
   auto x = make_arg_wrapper(a);
   auto y = make_arg_wrapper(b);
   auto z = make_arg_wrapper(c);
 
-  BOOST_CHECK_EQUAL(x.unsafe_pointer_value->value, a.value);
-  BOOST_CHECK_EQUAL(y.unsafe_pointer_value->value, a.value);
-  BOOST_CHECK_EQUAL(z.unsafe_pointer_value->value, a.value);
+  BOOST_CHECK((std::is_same<decltype(x), place_holder>::value));
+  BOOST_CHECK((std::is_same<decltype(y), place_holder>::value));
+  BOOST_CHECK((std::is_same<decltype(z), place_holder>::value));
 }
 
 BOOST_AUTO_TEST_CASE( wrap_simple_args ) {
@@ -130,5 +130,7 @@ BOOST_AUTO_TEST_CASE( wrap_no_copy ) {
   auto w = wrap_args_as_tuple(a, b, c, 1, 2);
   std::ostringstream os;
   os << w;
-  BOOST_CHECK_EQUAL(os.str(), "<{unsafe},{unsafe},{unsafe},1,2>");
+  BOOST_CHECK_EQUAL(os.str(),
+                    "<[::place_holder::],[::place_holder::]"
+                    ",[::place_holder::],1,2>");
 }
