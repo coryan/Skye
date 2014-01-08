@@ -1,16 +1,19 @@
 #ifndef escapement_e_mocking_asio_async_accept_member_function_hpp
 #define escapement_e_mocking_asio_async_accept_member_function_hpp
 
-#include <e/mocking/asio/async_accept_traits.hpp>
-#include <e/mocking/asio/async_function.hpp>
+#include <e/mocking/asio/detail/async_function_argument_capture.hpp>
+#include <e/mocking/common/mock_template_function.hpp>
 
-#include <vector>
+#include <boost/system/error_code.hpp>
 
 namespace e {
 namespace mocking {
 namespace asio {
 
-typedef async_function<async_accept_traits> async_accept_member_function;
+typedef detail::async_function_argument_capture<
+  void(boost::system::error_code const &)> async_accept_capture;
+typedef e::mocking::common::mock_template_function<
+  void, async_accept_capture> async_accept_member_function;
 
 } // namespace asio
 } // namespace mocking

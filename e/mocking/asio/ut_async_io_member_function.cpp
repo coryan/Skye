@@ -30,10 +30,12 @@ BOOST_AUTO_TEST_CASE( async_write_member_function_with_calls ) {
       });
 
   BOOST_CHECK_EQUAL(amf.has_calls(), 1);
-  BOOST_CHECK_EQUAL(amf.at(0)->get_size(), sizeof(msg) - 1);
-  BOOST_CHECK_EQUAL(amf.at(0)->get_data(), static_cast<void const*>(msg));
+  BOOST_CHECK_EQUAL(
+      amf.at(0)->get_buffer_size(), sizeof(msg) - 1);
+  BOOST_CHECK_EQUAL(
+      amf.at(0)->get_buffer_data(), static_cast<void const*>(msg));
 
-  amf.at(0)->call_handler(boost::system::error_code(), 2);
+  amf.at(0)->call_functor(boost::system::error_code(), 2);
   BOOST_CHECK_EQUAL(counter, 1);
   BOOST_CHECK_EQUAL(total_bt, 2);
 }
@@ -60,17 +62,15 @@ BOOST_AUTO_TEST_CASE( async_read_member_function_with_calls ) {
       });
 
   BOOST_CHECK_EQUAL(amf.has_calls(), 1);
-  BOOST_CHECK_EQUAL(
-      amf.at(0)->get_size(), bufsize);
-  BOOST_CHECK_EQUAL(
-      amf.at(0)->get_data(), raw);
+  BOOST_CHECK_EQUAL(amf.at(0)->get_buffer_size(), bufsize);
+  BOOST_CHECK_EQUAL(amf.at(0)->get_buffer_data(), raw);
 
-  amf.at(0)->call_handler(boost::system::error_code(), 2);
+  amf.at(0)->call_functor(boost::system::error_code(), 2);
   BOOST_CHECK_EQUAL(counter, 1);
   BOOST_CHECK_EQUAL(total_bt, 2);
 
   char const msg[] = "TEST\n";
-  amf.at(0)->set_data(msg, sizeof(msg));
+  amf.at(0)->set_buffer_data(msg, sizeof(msg));
 
   BOOST_CHECK_EQUAL(std::string(raw), std::string(msg));
 }

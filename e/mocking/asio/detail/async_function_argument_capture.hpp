@@ -3,7 +3,10 @@
 
 #include <e/mocking/common/detail/argument_wrapper.hpp>
 
+#include <boost/asio/buffer.hpp>
+
 #include <memory>
+#include <stdexcept>
 
 namespace e {
 namespace mocking {
@@ -55,11 +58,82 @@ class async_function_argument_capture_holder<return_type(functor_args...)>
   virtual void stream(std::ostream & os) const = 0;
 
   /// Call (invoke) the captured functor using the argument provided.
-  virtual return_type call_functor(functor_args... args) const = 0;
+  virtual return_type call_functor(functor_args... args) = 0;
 
   /// Return the number of arguments in the call.
   virtual std::size_t argument_count() const = 0;
+
+  //@{
+  /**
+   * Buffer operations.
+   *
+   * Some async functions in Boost.ASIO have generic buffer objects as
+   * the first arguments to the call.  These function allow access,
+   * but raise an exception if the acess would not work (for example,
+   * if the parameters do not match the necessary interface.)
+   * Admittedly this is a bit of a hack, we should separate this to
+   * its own strategy.
+   * TODO(ES-50)
+   */
+  virtual std::size_t get_buffer_size() const = 0;
+  virtual void const * get_buffer_data() const = 0;
+  virtual void set_buffer_data(void const * data, std::size_t size) = 0;
+  //@}
 };
+
+//@{
+/**
+ * @name SFINAE protected functions to get buffer properties.
+ *
+ * Use SFINAE either implement get_buffer_size(), get_buffer_data
+ * and set_buffer_data() or raise exceptions if the argument does not
+ * support these member functions.
+ */
+/// Get the buffer size.
+template<typename wrapper>
+auto safeish_get_buffer_size(wrapper const & w, bool)
+    -> decltype(boost::asio::const_buffer(*w.value.begin()),
+                boost::asio::buffer_size(w.value)) {
+  return boost::asio::buffer_size(w.value);
+}
+
+/// Fallback case for get_buffer_size()
+template<typename... arg_types>
+std::size_t safeish_get_buffer_size(arg_types...) {
+  throw std::runtime_error(
+      "Captured argument does not seem to be an ASIO buffer");
+}
+
+/// Get the buffer size.
+template<typename wrapper>
+auto safeish_get_buffer_data(wrapper const & w, bool)
+    -> decltype(
+        boost::asio::const_buffer(*w.value.begin()),
+        boost::asio::buffer_cast<void const*>(w.value)) {
+  return boost::asio::buffer_cast<void const*>(w.value);
+}
+
+/// Fallback case for get_buffer_size()
+template<typename... arg_types>
+void const * safeish_get_buffer_data(arg_types...) {
+  throw std::runtime_error(
+      "Captured argument does not seem to be an ASIO buffer");
+}
+
+/// Get the buffer size.
+template<typename wrapper, typename source>
+auto safeish_set_buffer_data(wrapper & w, source const & b)
+    -> decltype(boost::asio::mutable_buffer(*w.value.begin()), void()) {
+  boost::asio::buffer_copy(w.value, b);
+}
+
+/// Fallback case for get_buffer_size()
+template<typename... arg_types>
+void safeish_set_buffer_data(arg_types...) {
+  throw std::runtime_error(
+      "Captured argument does not seem to be an ASIO buffer");
+}
+//@}
 
 /**
  * Implement a async_function_argument_capture_holder for a tuple.
@@ -102,13 +176,25 @@ class async_function_argument_capture_tuple<
     os << tuple_;
   }
 
-  virtual return_type call_functor(functor_args... args) const override {
+  virtual return_type call_functor(functor_args... args) override {
     std::size_t const N = std::tuple_size<tuple_type>::value;
     return std::get<N-1>(tuple_).value(args...);
   }
 
   virtual std::size_t argument_count() const override {
     return std::tuple_size<tuple_type>::value;
+  }
+
+  virtual std::size_t get_buffer_size() const override {
+    return safeish_get_buffer_size(std::get<0>(tuple_), true);
+  }
+  virtual void const * get_buffer_data() const  override {
+    return safeish_get_buffer_data(std::get<0>(tuple_), true);
+  }
+  virtual void set_buffer_data(void const * data, std::size_t size) override {
+    // TODO(ES-27)
+    return safeish_set_buffer_data(
+        std::get<0>(tuple_), boost::asio::buffer(data, size));
   }
 
  private:
