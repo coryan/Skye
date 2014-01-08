@@ -13,7 +13,7 @@ typedef std::vector<arguments> capture_sequence;
 using namespace e::mocking::common::detail;
 
 
-BOOST_AUTO_TEST_CASE( test_equality_filter ) {
+BOOST_AUTO_TEST_CASE( test_negative_filter ) {
   capture_sequence seq{
     std::make_tuple(1, "foo"),
     std::make_tuple(1, "foo"),
@@ -24,17 +24,19 @@ BOOST_AUTO_TEST_CASE( test_equality_filter ) {
     std::make_tuple(5, "foo"),
     std::make_tuple(1, "foo")};
 
-  equality_filter<capture_sequence> filter1(std::make_tuple(2, "bar"));
+  auto filter1 = make_negative_filter<capture_sequence>(
+      std::string("2, 'bar'"),
+      [](arguments const & t) { return t != std::make_tuple(2, "bar"); });
   capture_sequence tmp = seq;
-  filter1.filter(tmp);
+  filter1->filter(tmp);
   BOOST_CHECK_EQUAL(tmp.size(), 1);
 
-  equality_filter<capture_sequence> filter2(std::make_tuple(1, "foo"));
+  auto filter2 = make_negative_filter<capture_sequence>(
+      std::string("1, 'foor'"),
+      [](arguments const & t) { return t != std::make_tuple(1, "foo"); });
   tmp = seq;
-  filter2.filter(tmp);
+  filter2->filter(tmp);
   BOOST_CHECK_EQUAL(tmp.size(), 3);
-
-
 }
 
 BOOST_AUTO_TEST_CASE( test_at_least_validator ) {

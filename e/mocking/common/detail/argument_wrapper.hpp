@@ -1,9 +1,12 @@
 #ifndef escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
 #define escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
 
+#include <e/mocking/common/detail/tuple_streaming.hpp>
+
 #include <iostream>
 #include <tuple>
 #include <type_traits>
+#include <vector>
 
 namespace e {
 namespace mocking {
@@ -223,6 +226,37 @@ auto wrap_args_as_tuple(args&&... a)
     -> decltype(std::make_tuple(forward_wrapper(a)...)) {
   return std::make_tuple(forward_wrapper(a)...);
 }
+
+/**
+ * Define the default strategy to capture arguments in mock functions.
+ *
+ * For simple mock functions, i.e., those where the argument types are
+ * known in advance, this strategy copies the arguments to a tuple.
+ * Each argument is wrapped to deal with non-copy constructible,
+ * non-printable and non-comparable arguments.
+ */
+template<typename... arg_types>
+class known_arguments_capture_by_value {
+ public:
+  /// A single argument capture.
+  typedef decltype(wrap_args_as_tuple(std::declval<arg_types>()...)) value_type;
+
+  /// The type representing a sequence of argument captures.
+  typedef std::vector<value_type> capture_sequence;
+
+  /// Capture a set of arguments.
+  static value_type capture(arg_types&&... args) {
+    return wrap_args_as_tuple(args...);
+  }
+
+  static bool equals(value_type const & lhs, value_type const & rhs) {
+    return lhs == rhs;
+  }
+
+  static void stream(std::ostream & os, value_type const & x) {
+    os << x;
+  }
+};
 
 } // namespace detail
 } // namespace common

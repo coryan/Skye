@@ -4,6 +4,7 @@
 #include <e/mocking/common/detail/tuple_streaming.hpp>
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -222,39 +223,44 @@ class exactly_validator : public validator<sequence_type> {
 };
 
 /**
- * Implement a filter that only accepts captures matching an specific value.
+ * Implement a filter that only accepts captures not meeting a predicate.
  */
-template<class sequence_type>
-class equality_filter : public validator<sequence_type> {
+template<typename sequence_type, typename predicate_type>
+class negative_filter : public validator<sequence_type> {
  public:
-  typedef typename sequence_type::value_type value_type;
-
-  equality_filter(value_type && match)
-      : match_(match)
-  {}
-  equality_filter(value_type const & match)
-      : match_(match)
+  negative_filter(std::string const & description, predicate_type predicate)
+      : description_(description)
+      , predicate_(predicate)
   {}
 
   void filter(sequence_type & sequence) const override {
     sequence.erase(
-        std::remove_if(
-            sequence.begin(), sequence.end(),
-            [this](value_type const & x) {
-              return x != match_;
-            }),
+        std::remove_if(sequence.begin(), sequence.end(), predicate_),
         sequence.end());
   }
   validation_result validate(
       sequence_type const & ) const override {
     std::ostringstream os;
-    os << ".with( " << match_ << " )";
+    os << ".with( " << description_ << " )";
     return validation_result{true, false, os.str()};
   }
   
  private:
-  value_type match_;
+  std::string description_;
+  predicate_type predicate_;
 };
+
+/**
+ * Return a negative_filter<> of the right type.
+ */
+template<typename sequence_type, typename predicate_type>
+std::shared_ptr<validator<sequence_type>>
+make_negative_filter(
+    std::string const & description, predicate_type predicate) {
+  return std::shared_ptr<validator<sequence_type>>(
+      new negative_filter<sequence_type,predicate_type>(
+          description, predicate) );
+}
 
 } // namespace detail
 } // namespace common

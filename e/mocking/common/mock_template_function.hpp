@@ -6,8 +6,6 @@
 #include <e/mocking/common/detail/mock_returner.hpp>
 #include <e/mocking/common/detail/boost_reporting.hpp>
 
-#include <vector>
-#include <memory>
 #include <utility>
 
 namespace e {
@@ -47,22 +45,23 @@ namespace common {
  * @endcode
  *
  * @tparam return_type the return type from the mock function.
- * @tparam capture_strategy define how arguments are to be captured,
+ * @tparam capture_strategy_T define how arguments are to be captured,
  *   and to some degree the capabilities available to operate on the
  *   arguments. The type must meet the
  *   detail::capture_strategy_requirements interface.
  */
 template<
   typename return_type,
-  typename capture_strategy = detail::unknown_arguments_capture_by_value>
+  typename capture_strategy_T = detail::unknown_arguments_capture_by_value>
 class mock_template_function {
  public:
   //@{
   /**
    * @name Type traits
    */
+  typedef capture_strategy_T capture_strategy;
   typedef typename capture_strategy::value_type value_type;
-  typedef std::vector<value_type> capture_sequence;
+  typedef typename capture_strategy::capture_sequence capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
   typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
   //@}
@@ -104,9 +103,9 @@ class mock_template_function {
   }
 
   /// Use BOOST_CHECK_* semantics for validation.
-  detail::report_with_check<capture_sequence>
+  detail::report_with_check<capture_strategy>
   check(detail::location const & where) {
-    return detail::report_with_check<capture_sequence>(captures_, where);
+    return detail::report_with_check<capture_strategy>(captures_, where);
   }
 
   //@{

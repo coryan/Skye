@@ -109,7 +109,11 @@ class unknown_arguments_by_value_holder_tuple
  * @see capture:strategy:motivation
  */
 struct unknown_arguments_capture_by_value {
+  /// A single argument capture.
   typedef unknown_arguments_by_value_holder::pointer value_type;
+
+  /// The type representing a sequence of argument captures.
+  typedef std::vector<value_type> capture_sequence;
 
   template<typename... arg_types>
   static value_type capture(arg_types&&... args) {

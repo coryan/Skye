@@ -227,9 +227,14 @@ template<class return_type, typename... arg_types>
 class async_function_argument_capture<return_type(arg_types...)>
 {
  public:
+  /// A single argument capture.
   typedef typename async_function_argument_capture_holder<
     return_type(arg_types...)>::pointer value_type;
 
+  /// The type representing a sequence of argument captures.
+  typedef std::vector<value_type> capture_sequence;
+
+  /// Capture a set of arguments.
   template<typename... call_types>
   static value_type capture(call_types&&... args) {
     auto t = e::mocking::common::detail::wrap_args_as_tuple(args...);

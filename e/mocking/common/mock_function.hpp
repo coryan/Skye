@@ -4,8 +4,6 @@
 #include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <e/mocking/common/detail/mock_returner.hpp>
 #include <e/mocking/common/detail/boost_reporting.hpp>
-#include <vector>
-#include <memory>
 #include <utility>
 
 namespace e {
@@ -54,16 +52,23 @@ class mock_function;
 template<typename return_type, typename... arg_types>
 class mock_function<return_type(arg_types...)> {
  public:
+  //@{
+  /**
+   * @name Type traits
+   */
+  /// Hardcoded capture strategy.
+  typedef detail::known_arguments_capture_by_value<arg_types...>
+    capture_strategy;
+  typedef typename capture_strategy::value_type value_type;
+  typedef typename capture_strategy::capture_sequence capture_sequence;
+  typedef typename capture_sequence::const_iterator iterator;
+  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
+  //@}
+
   mock_function()
       : captures_()
       , returner_(new detail::default_returner<return_type>()) {
   }
-  
-  typedef decltype(
-      detail::wrap_args_as_tuple(std::declval<arg_types>()...)) value_type;
-  typedef std::vector<value_type> capture_sequence;
-  typedef typename capture_sequence::const_iterator iterator;
-  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
 
   /**
    * Stores the arguments and returns the value provided by the
@@ -95,9 +100,9 @@ class mock_function<return_type(arg_types...)> {
   }
 
   /// Use BOOST_CHECK_* semantics for validation.
-  detail::report_with_check<capture_sequence>
+  detail::report_with_check<capture_strategy>
   check(detail::location const & where) {
-    return detail::report_with_check<capture_sequence>(captures_, where);
+    return detail::report_with_check<capture_strategy>(captures_, where);
   }
 
   //# define e_m_require() check(E_M_LOCATION)

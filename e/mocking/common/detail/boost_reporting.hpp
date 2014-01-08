@@ -62,11 +62,16 @@ namespace detail {
  *
  * The never() quantifier short-circuits validation, that means that
  * whatever results from subsequent validators are ignored.
+ *
+ * @tparam capture_strategy_T how was the underlying mock function
+ * capturing its arguments 
  */
-template<typename sequence_type>
+template<typename capture_strategy_T>
 class report_with_check {
  public:
-  typedef typename sequence_type::value_type value_type;
+  typedef capture_strategy_T capture_strategy;
+  typedef typename capture_strategy::value_type value_type;
+  typedef typename capture_strategy::capture_sequence sequence_type;
   typedef std::shared_ptr<validator<sequence_type>> pointer;
 
   report_with_check(
@@ -122,19 +127,20 @@ class report_with_check {
 
   /// Filters to only the calls with the given value.
   template<typename... arg_types>
-  report_with_check & with(arg_types... args) {
-    auto match = detail::wrap_args_as_tuple(args...);
-    static_assert(
-        std::is_convertible<decltype(match),value_type>::value,
-        "Match expression is not convertible to argument capture");
-
-    add_validator(pointer(
-        new equality_filter<sequence_type>(std::move(match))));
-    return *this;
+  report_with_check & with(arg_types&&... args) {
+    auto match = capture_strategy::capture(std::forward<arg_types>(args)...);
+    return with(std::move(match));
   }
-  report_with_check & with(value_type && match) {
-    return add_validator(pointer(
-        new equality_filter<sequence_type>(match)));
+
+  report_with_check & with(value_type && m) {
+    value_type match(m);
+    std::ostringstream os;
+    capture_strategy::stream(os, match);
+    add_validator(
+        make_negative_filter<sequence_type>( os.str(), [match](value_type v) {
+            return not capture_strategy::equals(match, v);
+          }));
+    return *this;
   }
                          
   //@}

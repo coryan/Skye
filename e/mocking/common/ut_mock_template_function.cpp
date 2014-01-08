@@ -113,6 +113,9 @@ BOOST_AUTO_TEST_CASE( mock_template_function_asserts ) {
   function.check_called().between( 3, 30 );
   function.check_called().exactly( 5 );
 
-  //  function.check_called().at_least( 3 ).with( 7, std::string("bar" ));
-  //function.check_called().with( 7, std::string("bar" ));
+  function.check_called().never().with( 7, std::string("bar"));
+  function.check_called().at_least( 3 ).with( 42, std::string("foo"));
+  function.check_called().once().with( std::string("foo"), std::string("bar"));
+
 }
+
