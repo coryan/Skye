@@ -27,7 +27,12 @@ class unknown_arguments_by_value_holder {
   /// Destructor.
   virtual ~unknown_arguments_by_value_holder() {}
 
-  /// Compare two holders.
+  /**
+   * Compare two holders for equality.
+   *
+   * This member function is expected to perform a deep comparison,
+   * basically member-by-member.
+   */
   virtual bool equals(pointer const & other) const = 0;
 
   /// Print the argument values using iostreams.
