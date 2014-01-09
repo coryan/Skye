@@ -1,9 +1,8 @@
-#ifndef escapement_e_mocking_common_detail_boost_reporting_hpp
-#define escapement_e_mocking_common_detail_boost_reporting_hpp
+#ifndef escapement_e_mocking_common_detail_function_assertion_hpp
+#define escapement_e_mocking_common_detail_function_assertion_hpp
 
 #include <e/mocking/common/detail/validator.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include <list>
 #include <memory>
@@ -17,8 +16,7 @@ namespace common {
 namespace detail {
 
 /**
- * The root for a validation chain, reports to Boost using
- * BOOST_CHECK_* semantics.
+ * Build a validation check, executes it and then reports the results.
  *
  * Somebody more clever than me can figure out how to implement this
  * without lists and other additional data structures, seems like an
@@ -37,9 +35,10 @@ namespace detail {
  * f.check_called().exactly(3).with(2, "bcd");
  * @endcode
  *
- * After some minimal pre-processor macro, the check_called() function
- * returns an object of @c report_with_check class.  This produces the
- * following list of validators:
+ * After some minimal pre-processor macro hidden inside that
+ * check_called() member-function looking thing, the mock_function
+ * constructs an instance of this class.  The chain of calls
+ * exactly().with(), produces the following list of validators:
  *
  * @code
  * f.check_called().exactly(3).with(2, "bcd");
@@ -64,23 +63,28 @@ namespace detail {
  * whatever results from subsequent validators are ignored.
  *
  * @tparam capture_strategy_T how was the underlying mock function
- * capturing its arguments 
+ * capturing its arguments.
+ * @tparam reporting_strategy_T how are assertion results supposed to
+ * be reported.
  */
-template<typename capture_strategy_T>
-class report_with_check {
+template<typename capture_strategy_T,
+         typename reporting_strategy_T>
+class function_assertion {
  public:
   typedef capture_strategy_T capture_strategy;
+  typedef reporting_strategy_T reporting_strategy;
   typedef typename capture_strategy::value_type value_type;
   typedef typename capture_strategy::capture_sequence sequence_type;
   typedef std::shared_ptr<validator<sequence_type>> pointer;
 
-  report_with_check(
+  function_assertion(
       sequence_type const & sequence, location const & where)
       : validators_()
       , sequence_(sequence)
       , where_(where) {
+    reporting_strategy::checkpoint(where_);
   }
-  ~report_with_check() {
+  ~function_assertion() {
     validate();
   }
 
@@ -89,31 +93,31 @@ class report_with_check {
    * @name Validator factory functions.
    */
   /// Requires at least (inclusive) this many calls after filtering.
-  report_with_check & at_least(std::size_t min) {
+  function_assertion & at_least(std::size_t min) {
     add_validator(pointer(new at_least_validator<sequence_type>(min)));
     return *this;
   }
 
   /// Requires at most (inclusive) this many calls after filtering.
-  report_with_check & at_most(std::size_t max) {
+  function_assertion & at_most(std::size_t max) {
     add_validator(pointer(new at_most_validator<sequence_type>(max)));
     return *this;
   }
 
   /// Requires exactly this many calls after filtering.
-  report_with_check & exactly(std::size_t expected) {
+  function_assertion & exactly(std::size_t expected) {
     add_validator(pointer(
         new exactly_validator<sequence_type,false>(expected)));
     return *this;
   }
 
   /// Requires exactly one call after filtering.
-  report_with_check & once() {
+  function_assertion & once() {
     return exactly(1);
   }
 
   /// Requires no calls after filtering.
-  report_with_check & never() {
+  function_assertion & never() {
     add_validator(pointer(
         new exactly_validator<sequence_type,true>(0)));
     return *this;
@@ -121,18 +125,18 @@ class report_with_check {
 
   /// Requires between @a min and @a max calls, both inclusive, after
   /// filtering.
-  report_with_check & between(std::size_t min, std::size_t max) {
+  function_assertion & between(std::size_t min, std::size_t max) {
     return at_least(min).at_most(max);
   }
 
   /// Filters to only the calls with the given value.
   template<typename... arg_types>
-  report_with_check & with(arg_types&&... args) {
+  function_assertion & with(arg_types&&... args) {
     auto match = capture_strategy::capture(std::forward<arg_types>(args)...);
     return with(std::move(match));
   }
 
-  report_with_check & with(value_type && m) {
+  function_assertion & with(value_type && m) {
     value_type match(m);
     std::ostringstream os;
     capture_strategy::stream(os, match);
@@ -151,9 +155,6 @@ class report_with_check {
   }
 
   void validate() {
-    boost::unit_test::unit_test_log.set_checkpoint(
-        where_.file, where_.line);
-
     sequence_type sequence;
     sequence.swap(sequence_); // We no longer need the contents of sequence_
 
@@ -170,16 +171,11 @@ class report_with_check {
         break;
       }
     }
-    auto ll = boost::unit_test::log_successful_tests;
-    if (not r.pass) {
-      ll = boost::unit_test::log_all_errors;
+    if (r.pass) {
+      reporting_strategy::report_success(where_, msg);
+    } else {
+      reporting_strategy::report_failure(where_, msg);
     }
-    boost::unit_test::framework::assertion_result( r.pass );
-    boost::unit_test::unit_test_log
-        << boost::unit_test::log::begin(
-            where_.file, where_.line)
-        << ll << msg
-        << boost::unit_test::log::end();
   }
 
  private:
@@ -198,9 +194,20 @@ class report_with_check {
  */
 #define check_called() check(ESCAPEMENT_MOCK_LOCATION)
 
+/**
+ * Validate using BOOST_REQUIRE_* semantics, i.e., errors terminate
+ * the test.
+ *
+ * The use of a macro here is required to capture the file and line
+ * number.  We are allowing a macro with a short name because this
+ * is intended to be used in test code only, so any namespace
+ * pollution can be kept under control.
+ */
+#define require_called() require(ESCAPEMENT_MOCK_LOCATION)
+
 } // namespace detail
 } // namespace common
 } // namespace mocking
 } // namespace e
 
-#endif // escapement_e_mocking_common_detail_boost_reporting_hpp
+#endif // escapement_e_mocking_common_detail_function_assertion_hpp

@@ -3,7 +3,8 @@
 
 #include <e/mocking/common/detail/argument_wrapper.hpp>
 #include <e/mocking/common/detail/mock_returner.hpp>
-#include <e/mocking/common/detail/boost_reporting.hpp>
+#include <e/mocking/common/detail/function_assertion.hpp>
+#include <e/mocking/common/detail/boost_assertion_reporting.hpp>
 #include <utility>
 
 namespace e {
@@ -99,16 +100,23 @@ class mock_function<return_type(arg_types...)> {
           std::forward<object_type>(object));
   }
 
-  /// Use BOOST_CHECK_* semantics for validation.
-  detail::report_with_check<capture_strategy>
+  /// Create a new function assertion, where failures do not terminate
+  /// the current test.
+  detail::function_assertion<capture_strategy, detail::boost_check_reporting>
   check(detail::location const & where) {
-    return detail::report_with_check<capture_strategy>(captures_, where);
+    return detail::function_assertion<
+      capture_strategy, detail::boost_check_reporting>(
+          captures_, where);
   }
 
-  //# define e_m_require() check(E_M_LOCATION)
-  //  validator & require(detail::location const & where) {
-  //  }
-  //@}
+  /// Create a new function assertion, where failures terminate the
+  /// current test.
+  detail::function_assertion<capture_strategy, detail::boost_require_reporting>
+  require(detail::location const & where) {
+    return detail::function_assertion<
+      capture_strategy, detail::boost_require_reporting>(
+          captures_, where);
+  }
 
   //@{
   /**
