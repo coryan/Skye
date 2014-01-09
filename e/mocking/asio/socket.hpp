@@ -15,6 +15,8 @@ class socket : public service {
  public:
   typedef protocol protocol_type;
 
+  socket()
+  {}
   explicit socket(boost::asio::io_service & io)
       : service(io)
   {}

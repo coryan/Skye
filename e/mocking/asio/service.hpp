@@ -18,10 +18,13 @@ namespace asio {
  */
 class service : public boost::asio::io_service::service {
  public:
-  static boost::asio::io_service::id id;
+  service();
   explicit service(boost::asio::io_service & io)
       : boost::asio::io_service::service(io)
   {}
+
+  /// A (yuck) Singleton io service for testing purposes
+  static boost::asio::io_service & io_service_for_testing();
 
   e::mocking::common::mock_function<
     void(boost::asio::io_service::fork_event)> fork_service_capture;
