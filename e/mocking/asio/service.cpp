@@ -1,5 +1,6 @@
 #include <e/mocking/asio/service.hpp>
 
+/// Hide the objects from collisions with other namespaces / users.
 namespace {
 /// A pre-defined io service to make implementation of mock services easier.
 boost::asio::io_service io_internal;
