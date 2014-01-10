@@ -69,8 +69,6 @@ class iterator {
     ++i_;
     if (i_ == shared_->end()) {
       shared_.reset();
-      i_ = shared_->end();
-      return;
     }
   }
 

@@ -18,7 +18,10 @@ BOOST_AUTO_TEST_CASE( mock_iterator_create ) {
   BOOST_CHECK(i != end);
 
   std::string all;
+  int counter = 0;
   for (; i != iterator(); ++i) {
+    BOOST_CHECK_EQUAL(i->endpoint().value(), result.at(counter).value());
+    ++counter;
     all += " ";
     all += i->endpoint().value();
   }
