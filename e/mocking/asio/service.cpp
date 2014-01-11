@@ -1,9 +1,12 @@
 #include <e/mocking/asio/service.hpp>
+#include <memory>
 
 /// Hide the objects from collisions with other namespaces / users.
 namespace {
+
 /// A pre-defined io service to make implementation of mock services easier.
-boost::asio::io_service io_internal;
+std::unique_ptr<boost::asio::io_service> io_internal;
+
 } // anonymous namespace
 
 namespace e {
@@ -11,12 +14,20 @@ namespace mocking {
 namespace asio {
 
 service::service()
-    : boost::asio::io_service::service(io_internal)
+    : boost::asio::io_service::service(io_service_for_testing())
 {
 }
 
 boost::asio::io_service & service::io_service_for_testing() {
-  return io_internal;
+  if (not io_internal) {
+    return reset_io_service_for_testing();
+  }
+  return *io_internal;
+}
+
+boost::asio::io_service & service::reset_io_service_for_testing() {
+  io_internal.reset(new boost::asio::io_service);
+  return *io_internal;
 }
 
 void service::fork_service(

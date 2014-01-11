@@ -26,6 +26,9 @@ class service : public boost::asio::io_service::service {
   /// A (yuck) Singleton io service for testing purposes
   static boost::asio::io_service & io_service_for_testing();
 
+  /// Reset the singleton, usually called at the beginning of each test.
+  static boost::asio::io_service & reset_io_service_for_testing();
+
   e::mocking::common::mock_function<
     void(boost::asio::io_service::fork_event)> fork_service_capture;
   e::mocking::common::mock_function<void()> shutdown_service_capture;
