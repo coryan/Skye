@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_asio_iterator_hpp
 #define escapement_e_mocking_asio_iterator_hpp
 
-#include <e/mocking/asio/endpoint.hpp>
+#include <skye/asio/endpoint.hpp>
 #include <memory>
 #include <vector>
 

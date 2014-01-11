@@ -1,8 +1,8 @@
 #ifndef escapement_e_mocking_common_detail_unknown_arguments_capture_by_value_hpp
 #define escapement_e_mocking_common_detail_unknown_arguments_capture_by_value_hpp
 
-#include <e/mocking/common/detail/argument_wrapper.hpp>
-#include <e/mocking/common/detail/tuple_streaming.hpp>
+#include <skye/common/detail/argument_wrapper.hpp>
+#include <skye/common/detail/tuple_streaming.hpp>
 #include <memory>
 
 namespace e {

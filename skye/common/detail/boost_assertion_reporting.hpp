@@ -1,10 +1,10 @@
 #ifndef escapement_e_mocking_common_detail_boost_assertion_reporting_hpp
 #define escapement_e_mocking_common_detail_boost_assertion_reporting_hpp
 
-#include <e/e-config.hpp>
+#include <skye/skye-config.hpp>
 
 #if defined(HAVE_BOOST_UNIT_TEST_FRAMEWORK)
-#include <e/mocking/common/detail/validator.hpp>
+#include <skye/common/detail/validator.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 

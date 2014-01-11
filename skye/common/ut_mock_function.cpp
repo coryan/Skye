@@ -1,5 +1,5 @@
-#include <e/mocking/common/mock_function.hpp>
-#include <e/mocking/common/detail/tuple_streaming.hpp>
+#include <skye/common/mock_function.hpp>
+#include <skye/common/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 

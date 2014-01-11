@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_asio_detail_async_function_argument_capture_hpp
 #define escapement_e_mocking_asio_detail_async_function_argument_capture_hpp
 
-#include <e/mocking/common/detail/argument_wrapper.hpp>
+#include <skye/common/detail/argument_wrapper.hpp>
 
 #include <boost/asio/buffer.hpp>
 

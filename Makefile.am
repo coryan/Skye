@@ -25,8 +25,13 @@ AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 # Common configuration for all unit tests
 UT_CPPFLAGS = -DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN
-skye_ut_libs = skye/lib_skye.la $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
-skye_ut_asio_libs = skye/asio/lib_skye_asio.a $(BOOST_ASIO_LIB) $(skye_ut_libs)
+skye_ut_libs = \
+  skye/common/lib_skye.a \
+  $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+skye_ut_asio_libs = \
+  skye/asio/lib_skye_asio.a \
+  $(BOOST_ASIO_LIB) $(BOOST_SYSTEM_LIB) \
+  $(skye_ut_libs)
 
 ################################################################
 # skye/common

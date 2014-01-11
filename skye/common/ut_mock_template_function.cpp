@@ -1,4 +1,4 @@
-#include <e/mocking/common/mock_template_function.hpp>
+#include <skye/common/mock_template_function.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <sstream>

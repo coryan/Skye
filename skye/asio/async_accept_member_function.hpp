@@ -1,8 +1,8 @@
 #ifndef escapement_e_mocking_asio_async_accept_member_function_hpp
 #define escapement_e_mocking_asio_async_accept_member_function_hpp
 
-#include <e/mocking/asio/detail/async_function_argument_capture.hpp>
-#include <e/mocking/common/mock_template_function.hpp>
+#include <skye/asio/detail/async_function_argument_capture.hpp>
+#include <skye/common/mock_template_function.hpp>
 
 #include <boost/system/error_code.hpp>
 

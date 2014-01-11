@@ -1,10 +1,10 @@
 #ifndef escapement_e_mocking_common_mock_function_hpp
 #define escapement_e_mocking_common_mock_function_hpp
 
-#include <e/mocking/common/detail/argument_wrapper.hpp>
-#include <e/mocking/common/detail/mock_returner.hpp>
-#include <e/mocking/common/detail/function_assertion.hpp>
-#include <e/mocking/common/detail/boost_assertion_reporting.hpp>
+#include <skye/common/detail/argument_wrapper.hpp>
+#include <skye/common/detail/mock_returner.hpp>
+#include <skye/common/detail/function_assertion.hpp>
+#include <skye/common/detail/boost_assertion_reporting.hpp>
 #include <utility>
 
 namespace e {

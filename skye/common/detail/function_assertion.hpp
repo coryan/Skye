@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_common_detail_function_assertion_hpp
 #define escapement_e_mocking_common_detail_function_assertion_hpp
 
-#include <e/mocking/common/detail/validator.hpp>
+#include <skye/common/detail/validator.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include <list>

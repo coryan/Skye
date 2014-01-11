@@ -1,4 +1,4 @@
-#include <e/mocking/common/detail/unknown_arguments_capture_by_value.hpp>
+#include <skye/common/detail/unknown_arguments_capture_by_value.hpp>
 
 #include <boost/test/unit_test.hpp>
 

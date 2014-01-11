@@ -1,8 +1,8 @@
 #ifndef escapement_e_mocking_asio_acceptor_hpp
 #define escapement_e_mocking_asio_acceptor_hpp
 
-#include <e/mocking/asio/async_accept_member_function.hpp>
-#include <e/mocking/asio/service.hpp>
+#include <skye/asio/async_accept_member_function.hpp>
+#include <skye/asio/service.hpp>
 
 namespace e {
 namespace mocking {

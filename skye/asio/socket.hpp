@@ -1,11 +1,11 @@
 #ifndef escapement_e_mocking_asio_socket_hpp
 #define escapement_e_mocking_asio_socket_hpp
 
-#include <e/mocking/asio/async_io_member_function.hpp>
-#include <e/mocking/asio/async_connect_member_function.hpp>
-#include <e/mocking/asio/service.hpp>
-#include <e/mocking/asio/protocol.hpp>
-#include <e/mocking/common/mock_function.hpp>
+#include <skye/asio/async_io_member_function.hpp>
+#include <skye/asio/async_connect_member_function.hpp>
+#include <skye/asio/service.hpp>
+#include <skye/asio/protocol.hpp>
+#include <skye/common/mock_function.hpp>
 
 namespace e {
 namespace mocking {

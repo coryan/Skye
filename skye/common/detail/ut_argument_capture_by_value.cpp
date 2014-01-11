@@ -1,4 +1,4 @@
-#include <e/mocking/common/detail/argument_wrapper.hpp>
+#include <skye/common/detail/argument_wrapper.hpp>
 
 #include <boost/test/unit_test.hpp>
 

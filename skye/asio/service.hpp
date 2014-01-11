@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_asio_service_hpp
 #define escapement_e_mocking_asio_service_hpp
 
-#include <e/mocking/common/mock_function.hpp>
+#include <skye/common/mock_function.hpp>
 #include <boost/asio/io_service.hpp>
 
 namespace e {

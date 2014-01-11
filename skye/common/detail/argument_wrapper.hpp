@@ -1,7 +1,7 @@
 #ifndef escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
 #define escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
 
-#include <e/mocking/common/detail/tuple_streaming.hpp>
+#include <skye/common/detail/tuple_streaming.hpp>
 
 #include <iostream>
 #include <tuple>

@@ -41,6 +41,8 @@ AX_BOOST_BASE([1.53],[],[
   AC_MSG_ERROR([unable to find a suitable Boost library, need version >= 1.53])
 ])
 AX_BOOST_UNIT_TEST_FRAMEWORK
+AX_BOOST_ASIO
+AX_BOOST_SYSTEM
 
 # Checks for header files.
 

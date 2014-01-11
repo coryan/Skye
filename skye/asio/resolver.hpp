@@ -1,8 +1,8 @@
 #ifndef escapement_e_mocking_asio_resolver_hpp
 #define escapement_e_mocking_asio_resolver_hpp
 
-#include <e/mocking/asio/iterator.hpp>
-#include <e/mocking/common/mock_function.hpp>
+#include <skye/asio/iterator.hpp>
+#include <skye/common/mock_function.hpp>
 
 #include <boost/asio/io_service.hpp>
 #include <vector>
