@@ -1,0 +1,6 @@
+Configure and install using the usual autotools setup:
+
+$ ./configure
+$ make
+$ make check
+$ sudo make install
