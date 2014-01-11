@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_asio_resolver_hpp
-#define escapement_e_mocking_asio_resolver_hpp
+#ifndef skye_asio_resolver_hpp
+#define skye_asio_resolver_hpp
 
 #include <skye/asio/iterator.hpp>
 #include <skye/common/mock_function.hpp>
@@ -7,8 +7,7 @@
 #include <boost/asio/io_service.hpp>
 #include <vector>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 /**
@@ -16,19 +15,18 @@ namespace asio {
  */
 class resolver : public service {
  public:
-  static boost::asio::io_service::id id;
+  static boost::asio::io_servicid id;
   explicit resolver(boost::asio::io_service & io)
       : service(io)
   {}
 
-  typedef e::mocking::asio::iterator iterator;
+  typedef skye::asio::iterator iterator;
   typedef iterator::resolver_result resolver_result;
 
-  e::mocking::common::mock_function<iterator(std::string const&)> resolve;
+  skye::common::mock_function<iterator(std::string const&)> resolve;
 };
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_service_hpp
+#endif // skye_asio_service_hpp

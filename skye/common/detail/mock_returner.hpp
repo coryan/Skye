@@ -1,12 +1,11 @@
-#ifndef escapement_e_mocking_common_detail_mock_returner_hpp
-#define escapement_e_mocking_common_detail_mock_returner_hpp
+#ifndef skye_common_detail_mock_returner_hpp
+#define skye_common_detail_mock_returner_hpp
 
 #include <memory>
 #include <stdexcept>
 #include <string>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -113,7 +112,6 @@ struct create_returner<return_value,object_type,false> {
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_detail_mock_returner_hpp
+#endif // skye_common_detail_mock_returner_hpp

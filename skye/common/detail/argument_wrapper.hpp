@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
-#define escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
+#ifndef skye_common_detail_invocation_argument_wrapper_hpp
+#define skye_common_detail_invocation_argument_wrapper_hpp
 
 #include <skye/common/detail/tuple_streaming.hpp>
 
@@ -8,8 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -260,7 +259,6 @@ class known_arguments_capture_by_value {
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_detail_invocation_argument_wrapper_hpp
+#endif // skye_common_detail_invocation_argument_wrapper_hpp

@@ -1,11 +1,10 @@
-#ifndef escapement_e_mocking_common_detail_tuple_streaming_hpp
-#define escapement_e_mocking_common_detail_tuple_streaming_hpp
+#ifndef skye_common_detail_tuple_streaming_hpp
+#define skye_common_detail_tuple_streaming_hpp
 
 #include <tuple>
 #include <iostream>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -46,8 +45,7 @@ struct tuple_contents_printer<tuple_t,0> {
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
 namespace std {
 
@@ -58,11 +56,11 @@ template<typename... args>
 ostream & operator<<(
     ostream & os, tuple<args...> const & x) {
   os << "<";
-  e::mocking::common::detail::tuple_contents_printer<
+  skye::common::detail::tuple_contents_printer<
     tuple<args...>, sizeof...(args)>::print(os, x);
   return os << ">";
 }
 
 } // namespace std
 
-#endif // escapement_e_mocking_common_detail_tuple_streaming_hpp
+#endif // skye_common_detail_tuple_streaming_hpp

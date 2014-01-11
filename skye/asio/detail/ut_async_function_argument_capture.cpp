@@ -3,7 +3,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::mocking::asio::detail;
+using namespace skye::asio::detail;
 
 /// Simple types to exercise the code
 namespace {

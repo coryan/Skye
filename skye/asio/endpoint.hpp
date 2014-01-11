@@ -1,10 +1,9 @@
-#ifndef escapement_e_mocking_asio_endpoint_hpp
-#define escapement_e_mocking_asio_endpoint_hpp
+#ifndef skye_asio_endpoint_hpp
+#define skye_asio_endpoint_hpp
 
 #include <iostream>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 /**
@@ -39,7 +38,6 @@ std::ostream & operator<<(std::ostream & os, mock_endpoint const & x) {
 }
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_service_hpp
+#endif // skye_asio_service_hpp

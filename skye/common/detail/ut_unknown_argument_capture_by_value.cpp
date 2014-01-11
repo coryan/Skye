@@ -2,7 +2,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::mocking::common::detail;
+using namespace skye::common::detail;
 
 BOOST_AUTO_TEST_CASE( test_unknown_arguments_capture_by_value ) {
   std::string a("a"), b("b"), c("c"), d("d");

@@ -7,7 +7,7 @@
 // classes are complicated, and we want them to at least compile
 // before we use them in real tests.
 
-using namespace e::mocking::asio;
+using namespace skye::asio;
 
 BOOST_AUTO_TEST_CASE( async_write_member_function_ctor ) {
   async_write_member_function async_write_some;

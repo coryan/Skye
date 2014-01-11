@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_detail_function_assertion_hpp
-#define escapement_e_mocking_common_detail_function_assertion_hpp
+#ifndef skye_common_detail_function_assertion_hpp
+#define skye_common_detail_function_assertion_hpp
 
 #include <skye/common/detail/validator.hpp>
 #include <boost/range/adaptor/reversed.hpp>
@@ -10,8 +10,7 @@
 #include <sstream>
 #include <type_traits>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -192,7 +191,7 @@ class function_assertion {
  * is intended to be used in test code only, so any namespace
  * pollution can be kept under control.
  */
-#define check_called() check(ESCAPEMENT_MOCK_LOCATION)
+#define check_called() check(SKYE_LOCATION)
 
 /**
  * Validate using BOOST_REQUIRE_* semantics, i.e., errors terminate
@@ -203,11 +202,10 @@ class function_assertion {
  * is intended to be used in test code only, so any namespace
  * pollution can be kept under control.
  */
-#define require_called() require(ESCAPEMENT_MOCK_LOCATION)
+#define require_called() require(SKYE_LOCATION)
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_detail_function_assertion_hpp
+#endif // skye_common_detail_function_assertion_hpp

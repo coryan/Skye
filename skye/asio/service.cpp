@@ -9,8 +9,7 @@ std::unique_ptr<boost::asio::io_service> io_internal;
 
 } // anonymous namespace
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 service::service()
@@ -42,5 +41,4 @@ void service::shutdown_service()
 }
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye

@@ -28,7 +28,7 @@ std::ostream & operator<<(std::ostream & os, test_no_copy const & x ) {
 
 } // anonymous namespace
 
-using namespace e::mocking::common;
+using namespace skye::common;
 
 BOOST_AUTO_TEST_CASE( mock_template_function_void ) {
   mock_template_function<void> function;

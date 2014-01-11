@@ -3,7 +3,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::mocking::common;
+using namespace skye::common;
 
 BOOST_AUTO_TEST_CASE( mock_function_void ) {
   mock_function<void(int,int)> function;

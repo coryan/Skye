@@ -100,7 +100,7 @@ skye_common_ut_mock_template_function_LDADD = \
 # skye/asio
 ################################################################
 
-skye_asio_lib_skye_asio_adir = $(includedir)/e
+skye_asio_lib_skye_asio_adir = $(includedir)/skye
 skye_asio_lib_skye_asio_a_HEADERS = \
   skye/asio/acceptor.hpp \
   skye/asio/async_accept_member_function.hpp \

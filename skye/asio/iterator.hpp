@@ -1,12 +1,11 @@
-#ifndef escapement_e_mocking_asio_iterator_hpp
-#define escapement_e_mocking_asio_iterator_hpp
+#ifndef skye_asio_iterator_hpp
+#define skye_asio_iterator_hpp
 
 #include <skye/asio/endpoint.hpp>
 #include <memory>
 #include <vector>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 /**
@@ -91,7 +90,6 @@ class iterator {
 };
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_service_hpp
+#endif // skye_asio_service_hpp

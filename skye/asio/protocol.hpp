@@ -1,8 +1,7 @@
-#ifndef escapement_e_mocking_asio_protocol_hpp
-#define escapement_e_mocking_asio_protocol_hpp
+#ifndef skye_asio_protocol_hpp
+#define skye_asio_protocol_hpp
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 class acceptor;
@@ -11,14 +10,13 @@ class resolver;
 class socket;
 
 struct protocol {
-  typedef e::mocking::asio::acceptor acceptor;
-  typedef e::mocking::asio::mock_endpoint endpoint;
-  typedef e::mocking::asio::resolver resolver;
-  typedef e::mocking::asio::socket socket;
+  typedef skye::asio::acceptor acceptor;
+  typedef skye::asio::mock_endpoint endpoint;
+  typedef skye::asio::resolver resolver;
+  typedef skye::asio::socket socket;
 };
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_protocol_hpp
+#endif // skye_asio_protocol_hpp

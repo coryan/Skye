@@ -1,11 +1,10 @@
-#ifndef escapement_e_mocking_asio_service_hpp
-#define escapement_e_mocking_asio_service_hpp
+#ifndef skye_asio_service_hpp
+#define skye_asio_service_hpp
 
 #include <skye/common/mock_function.hpp>
 #include <boost/asio/io_service.hpp>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 /**
@@ -29,9 +28,9 @@ class service : public boost::asio::io_service::service {
   /// Reset the singleton, usually called at the beginning of each test.
   static boost::asio::io_service & reset_io_service_for_testing();
 
-  e::mocking::common::mock_function<
+  skye::common::mock_function<
     void(boost::asio::io_service::fork_event)> fork_service_capture;
-  e::mocking::common::mock_function<void()> shutdown_service_capture;
+  skye::common::mock_function<void()> shutdown_service_capture;
 
  private:
   virtual void fork_service(
@@ -40,7 +39,6 @@ class service : public boost::asio::io_service::service {
 };
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_service_hpp
+#endif // skye_asio_service_hpp

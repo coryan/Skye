@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_mock_template_function_hpp
-#define escapement_e_mocking_common_mock_template_function_hpp
+#ifndef skye_common_mock_template_function_hpp
+#define skye_common_mock_template_function_hpp
 
 #include <skye/common/detail/argument_wrapper.hpp>
 #include <skye/common/detail/unknown_arguments_capture_by_value.hpp>
@@ -9,8 +9,7 @@
 
 #include <utility>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 
 /**
@@ -154,7 +153,6 @@ class mock_template_function {
 };
 
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_mock_template_function_hpp
+#endif // skye_common_mock_template_function_hpp

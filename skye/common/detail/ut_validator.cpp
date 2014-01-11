@@ -10,7 +10,7 @@
 typedef std::tuple<int,std::string> arguments;
 typedef std::vector<arguments> capture_sequence;
 
-using namespace e::mocking::common::detail;
+using namespace skye::common::detail;
 
 
 BOOST_AUTO_TEST_CASE( test_negative_filter ) {

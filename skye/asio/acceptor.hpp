@@ -1,11 +1,10 @@
-#ifndef escapement_e_mocking_asio_acceptor_hpp
-#define escapement_e_mocking_asio_acceptor_hpp
+#ifndef skye_asio_acceptor_hpp
+#define skye_asio_acceptor_hpp
 
 #include <skye/asio/async_accept_member_function.hpp>
 #include <skye/asio/service.hpp>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 
 
@@ -26,16 +25,15 @@ class acceptor : public service {
   }
   virtual ~acceptor();
 
-  static e::mocking::common::mock_function<
+  static skye::common::mock_function<
     void(acceptor*,boost::asio::io_service*)> constructor_mock;
 
   async_accept_member_function async_accept;
 
-  e::mocking::common::mock_function<std::string()> local_endpoint;
+  skye::common::mock_function<std::string()> local_endpoint;
 };
 
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_acceptor_hpp
+#endif // skye_asio_acceptor_hpp

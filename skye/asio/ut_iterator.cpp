@@ -2,7 +2,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace e::mocking::asio;
+using namespace skye::asio;
 
 BOOST_AUTO_TEST_CASE( mock_iterator_create ) {
   iterator::resolver_result result;

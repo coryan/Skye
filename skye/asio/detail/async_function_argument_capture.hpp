@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_asio_detail_async_function_argument_capture_hpp
-#define escapement_e_mocking_asio_detail_async_function_argument_capture_hpp
+#ifndef skye_asio_detail_async_function_argument_capture_hpp
+#define skye_asio_detail_async_function_argument_capture_hpp
 
 #include <skye/common/detail/argument_wrapper.hpp>
 
@@ -8,8 +8,7 @@
 #include <memory>
 #include <stdexcept>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace asio {
 namespace detail {
 
@@ -237,7 +236,7 @@ class async_function_argument_capture<return_type(arg_types...)>
   /// Capture a set of arguments.
   template<typename... call_types>
   static value_type capture(call_types&&... args) {
-    auto t = e::mocking::common::detail::wrap_args_as_tuple(args...);
+    auto t = skye::common::detail::wrap_args_as_tuple(args...);
     return async_function_argument_capture_tuple<
       decltype(t),return_type(arg_types...)>::create(std::move(t));
   }
@@ -257,7 +256,6 @@ class async_function_argument_capture<return_type(arg_types...)>
 
 } // namespace detail
 } // namespace asio
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_asio_detail_async_function_argument_capture_hpp
+#endif // skye_asio_detail_async_function_argument_capture_hpp

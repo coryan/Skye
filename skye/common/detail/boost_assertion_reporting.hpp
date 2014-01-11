@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_detail_boost_assertion_reporting_hpp
-#define escapement_e_mocking_common_detail_boost_assertion_reporting_hpp
+#ifndef skye_common_detail_boost_assertion_reporting_hpp
+#define skye_common_detail_boost_assertion_reporting_hpp
 
 #include <skye/skye-config.hpp>
 
@@ -8,8 +8,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -73,9 +72,8 @@ struct boost_require_reporting {
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
 #endif /* HAVE_BOOST_UNIT_TEST_FRAMEWORK */
 
-#endif // escapement_e_mocking_common_detail_boost_assertion_reporting_hpp
+#endif // skye_common_detail_boost_assertion_reporting_hpp

@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_mock_function_hpp
-#define escapement_e_mocking_common_mock_function_hpp
+#ifndef skye_common_mock_function_hpp
+#define skye_common_mock_function_hpp
 
 #include <skye/common/detail/argument_wrapper.hpp>
 #include <skye/common/detail/mock_returner.hpp>
@@ -7,8 +7,7 @@
 #include <skye/common/detail/boost_assertion_reporting.hpp>
 #include <utility>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 
 template<typename T>
@@ -151,7 +150,6 @@ class mock_function<return_type(arg_types...)> {
 };
 
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_mock_function_hpp
+#endif // skye_common_mock_function_hpp

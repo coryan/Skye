@@ -1,5 +1,5 @@
-#ifndef escapement_e_mocking_common_detail_validator_hpp
-#define escapement_e_mocking_common_detail_validator_hpp
+#ifndef skye_common_detail_validator_hpp
+#define skye_common_detail_validator_hpp
 
 #include <skye/common/detail/tuple_streaming.hpp>
 
@@ -10,8 +10,7 @@
 #include <iostream>
 #include <tuple>
 
-namespace e {
-namespace mocking {
+namespace skye {
 namespace common {
 namespace detail {
 
@@ -47,8 +46,8 @@ inline std::ostream & operator<<(std::ostream & os, location const & x) {
 /**
  * Capture the location macros into an object.
  */
-#define ESCAPEMENT_MOCK_LOCATION \
-  e::mocking::common::detail::location(__func__, __FILE__, __LINE__)
+#define SKYE_LOCATION \
+  skye::common::detail::location(__func__, __FILE__, __LINE__)
 
 /**
  * A simple object to hold the validation results
@@ -264,7 +263,6 @@ make_negative_filter(
 
 } // namespace detail
 } // namespace common
-} // namespace mocking
-} // namespace e
+} // namespace skye
 
-#endif // escapement_e_mocking_common_detail_validator_hpp
+#endif // skye_common_detail_validator_hpp
