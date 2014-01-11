@@ -42,11 +42,29 @@ skye_lib_skye_a_HEADERS = \
   skye/mock_function.hpp \
   skye/mock_template_function.hpp \
   skye/detail/argument_wrapper.hpp \
+  skye/detail/boost_assertion_reporting.hpp \
   skye/detail/mock_returner.hpp \
   skye/detail/tuple_streaming.hpp \
+  skye/detail/unknown_arguments_capture_by_value.hpp \
   skye/detail/validator.hpp 
 skye_lib_skye_a_SOURCES = 
 skye_lib_skye_a_LIBADD =
+
+skye_ut_mock_function_SOURCES = \
+  skye/ut_mock_function.cpp
+skye_ut_mock_function_CPPFLAGS = \
+  $(UT_CPPFLAGS) \
+  -DBOOST_TEST_MODULE=skye_ut_mock_function
+skye_ut_mock_function_LDADD = \
+  $(skye_ut_libs)
+
+skye_ut_mock_template_function_SOURCES = \
+  skye/ut_mock_template_function.cpp
+skye_ut_mock_template_function_CPPFLAGS = \
+  $(UT_CPPFLAGS) \
+  -DBOOST_TEST_MODULE=skye_ut_mock_template_function
+skye_ut_mock_template_function_LDADD = \
+  $(skye_ut_libs)
 
 skye_detail_ut_argument_capture_by_value_SOURCES = \
   skye/detail/ut_argument_capture_by_value.cpp
@@ -80,22 +98,6 @@ skye_detail_ut_validator_CPPFLAGS = \
 skye_detail_ut_validator_LDADD = \
   $(skye_ut_libs)
 
-skye_ut_mock_function_SOURCES = \
-  skye/ut_mock_function.cpp
-skye_ut_mock_function_CPPFLAGS = \
-  $(UT_CPPFLAGS) \
-  -DBOOST_TEST_MODULE=skye_ut_mock_function
-skye_ut_mock_function_LDADD = \
-  $(skye_ut_libs)
-
-skye_ut_mock_template_function_SOURCES = \
-  skye/ut_mock_template_function.cpp
-skye_ut_mock_template_function_CPPFLAGS = \
-  $(UT_CPPFLAGS) \
-  -DBOOST_TEST_MODULE=skye_ut_mock_template_function
-skye_ut_mock_template_function_LDADD = \
-  $(skye_ut_libs)
-
 ################################################################
 # skye/asio
 ################################################################
@@ -111,11 +113,10 @@ skye_asio_lib_skye_asio_a_HEADERS = \
   skye/asio/protocol.hpp \
   skye/asio/resolver.hpp \
   skye/asio/service.hpp \
-  skye/asio/socket.hpp
-skye_asio_lib_skye_asio_a_SOURCES = \
-  skye/asio/acceptor.cpp \
-  skye/asio/service.cpp \
-  skye/asio/socket.cpp
+  skye/asio/socket.hpp \
+  skye/asio/detail/async_function_argument_capture.hpp \
+  skye/asio/detail/test_service_singleton.hpp
+skye_asio_lib_skye_asio_a_SOURCES =
 skye_asio_lib_skye_asio_a_LIBADD = \
   $(BOOST_ASIO_LIB)
 

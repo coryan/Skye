@@ -1,7 +1,9 @@
 #ifndef skye_asio_service_hpp
 #define skye_asio_service_hpp
 
+#include <skye/asio/detail/test_service_singleton.hpp>
 #include <skye/mock_function.hpp>
+
 #include <boost/asio/io_service.hpp>
 
 namespace skye {
@@ -17,16 +19,23 @@ namespace asio {
  */
 class service : public boost::asio::io_service::service {
  public:
-  service();
+  service()
+      : boost::asio::io_service::service(
+          detail::test_service_singleton<true>::instance())
+  {}
   explicit service(boost::asio::io_service & io)
       : boost::asio::io_service::service(io)
   {}
 
-  /// A (yuck) Singleton io service for testing purposes
-  static boost::asio::io_service & io_service_for_testing();
+  /// Returns the singleton io service for testing purposes
+  static boost::asio::io_service & io_service_for_testing() {
+    return detail::test_service_singleton<true>::instance();
+  }
 
   /// Reset the singleton, usually called at the beginning of each test.
-  static boost::asio::io_service & reset_io_service_for_testing();
+  static boost::asio::io_service & reset_io_service_for_testing() {
+    return detail::test_service_singleton<true>::reset_instance();
+  }
 
   skye::mock_function<
     void(boost::asio::io_service::fork_event)> fork_service_capture;
@@ -34,8 +43,12 @@ class service : public boost::asio::io_service::service {
 
  private:
   virtual void fork_service(
-      boost::asio::io_service::fork_event event);
-  virtual void shutdown_service();
+      boost::asio::io_service::fork_event event) override {
+    fork_service_capture(event);
+  }
+  virtual void shutdown_service() override {
+    shutdown_service_capture();
+  }
 };
 
 } // namespace asio
