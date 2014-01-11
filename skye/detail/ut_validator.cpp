@@ -1,4 +1,4 @@
-#include <skye/common/detail/validator.hpp>
+#include <skye/detail/validator.hpp>
 
 #include <boost/test/unit_test.hpp>
 
@@ -10,7 +10,7 @@
 typedef std::tuple<int,std::string> arguments;
 typedef std::vector<arguments> capture_sequence;
 
-using namespace skye::common::detail;
+using namespace skye::detail;
 
 
 BOOST_AUTO_TEST_CASE( test_negative_filter ) {

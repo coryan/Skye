@@ -1,5 +1,5 @@
 #include <skye/asio/detail/async_function_argument_capture.hpp>
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 

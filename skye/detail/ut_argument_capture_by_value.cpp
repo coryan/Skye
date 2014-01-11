@@ -1,8 +1,8 @@
-#include <skye/common/detail/argument_wrapper.hpp>
+#include <skye/detail/argument_wrapper.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace skye::common::detail;
+using namespace skye::detail;
 
 
 BOOST_AUTO_TEST_CASE( test_known_arguments_capture_by_value ) {

@@ -1,7 +1,7 @@
-#ifndef skye_common_detail_invocation_argument_wrapper_hpp
-#define skye_common_detail_invocation_argument_wrapper_hpp
+#ifndef skye_detail_invocation_argument_wrapper_hpp
+#define skye_detail_invocation_argument_wrapper_hpp
 
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 
 #include <iostream>
 #include <tuple>
@@ -9,7 +9,6 @@
 #include <vector>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /**
@@ -258,7 +257,6 @@ class known_arguments_capture_by_value {
 };
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_detail_invocation_argument_wrapper_hpp
+#endif // skye_detail_invocation_argument_wrapper_hpp

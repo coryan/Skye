@@ -1,9 +1,9 @@
-#include <skye/common/detail/argument_wrapper.hpp>
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/detail/argument_wrapper.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace skye::common::detail;
+using namespace skye::detail;
 
 /**
  * Implement simple types to drive the tests.
@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE( argument_wrapper_string ) {
 }
 
 BOOST_AUTO_TEST_CASE( argument_wrapper_copy_references ) {
-  using namespace skye::common::detail;
+  using namespace skye::detail;
 
   int a = 1;
   int & b = a;
@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE( tuple_streaming_triple ) {
 }
 
 BOOST_AUTO_TEST_CASE( wrap_simple_args ) {
-  using namespace skye::common::detail;
+  using namespace skye::detail;
 
   auto w = wrap_args_as_tuple(1, 2, 3, std::string("42"));
   std::ostringstream os;
@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE( wrap_simple_args ) {
 }
 
 BOOST_AUTO_TEST_CASE( wrap_simple_ref_args ) {
-  using namespace skye::common::detail;
+  using namespace skye::detail;
 
   int x = 1;
   int y = 2;
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE( wrap_simple_ref_args ) {
 }
 
 BOOST_AUTO_TEST_CASE( wrap_no_copy ) {
-  using namespace skye::common::detail;
+  using namespace skye::detail;
 
   no_copy a;
   no_copy & b = a;

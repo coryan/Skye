@@ -3,7 +3,7 @@
 namespace skye {
 namespace asio {
 
-skye::common::mock_function<void(acceptor*,boost::asio::io_service*)>
+skye::mock_function<void(acceptor*,boost::asio::io_service*)>
 acceptor::constructor_mock;
 
 acceptor::~acceptor()

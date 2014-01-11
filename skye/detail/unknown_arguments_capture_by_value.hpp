@@ -1,12 +1,11 @@
-#ifndef skye_common_detail_unknown_arguments_capture_by_value_hpp
-#define skye_common_detail_unknown_arguments_capture_by_value_hpp
+#ifndef skye_detail_unknown_arguments_capture_by_value_hpp
+#define skye_detail_unknown_arguments_capture_by_value_hpp
 
-#include <skye/common/detail/argument_wrapper.hpp>
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/detail/argument_wrapper.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 #include <memory>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /**
@@ -131,7 +130,6 @@ struct unknown_arguments_capture_by_value {
 };
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_detail_unknown_arguments_capture_by_value_hpp
+#endif // skye_detail_unknown_arguments_capture_by_value_hpp

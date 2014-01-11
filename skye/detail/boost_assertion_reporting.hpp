@@ -1,15 +1,14 @@
-#ifndef skye_common_detail_boost_assertion_reporting_hpp
-#define skye_common_detail_boost_assertion_reporting_hpp
+#ifndef skye_detail_boost_assertion_reporting_hpp
+#define skye_detail_boost_assertion_reporting_hpp
 
 #include <skye/skye-config.hpp>
 
 #if defined(HAVE_BOOST_UNIT_TEST_FRAMEWORK)
-#include <skye/common/detail/validator.hpp>
+#include <skye/detail/validator.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /// Common logging function for Boost.Test reporting
@@ -71,9 +70,8 @@ struct boost_require_reporting {
 };
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
 #endif /* HAVE_BOOST_UNIT_TEST_FRAMEWORK */
 
-#endif // skye_common_detail_boost_assertion_reporting_hpp
+#endif // skye_detail_boost_assertion_reporting_hpp

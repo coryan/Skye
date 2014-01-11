@@ -1,7 +1,7 @@
-#ifndef skye_common_detail_validator_hpp
-#define skye_common_detail_validator_hpp
+#ifndef skye_detail_validator_hpp
+#define skye_detail_validator_hpp
 
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 
 #include <algorithm>
 #include <memory>
@@ -11,7 +11,6 @@
 #include <tuple>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /**
@@ -47,7 +46,7 @@ inline std::ostream & operator<<(std::ostream & os, location const & x) {
  * Capture the location macros into an object.
  */
 #define SKYE_LOCATION \
-  skye::common::detail::location(__func__, __FILE__, __LINE__)
+  skye::detail::location(__func__, __FILE__, __LINE__)
 
 /**
  * A simple object to hold the validation results
@@ -262,7 +261,6 @@ make_negative_filter(
 }
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_detail_validator_hpp
+#endif // skye_detail_validator_hpp

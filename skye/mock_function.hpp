@@ -1,14 +1,13 @@
-#ifndef skye_common_mock_function_hpp
-#define skye_common_mock_function_hpp
+#ifndef skye_mock_function_hpp
+#define skye_mock_function_hpp
 
-#include <skye/common/detail/argument_wrapper.hpp>
-#include <skye/common/detail/mock_returner.hpp>
-#include <skye/common/detail/function_assertion.hpp>
-#include <skye/common/detail/boost_assertion_reporting.hpp>
+#include <skye/detail/argument_wrapper.hpp>
+#include <skye/detail/mock_returner.hpp>
+#include <skye/detail/function_assertion.hpp>
+#include <skye/detail/boost_assertion_reporting.hpp>
 #include <utility>
 
 namespace skye {
-namespace common {
 
 template<typename T>
 class mock_function;
@@ -149,7 +148,6 @@ class mock_function<return_type(arg_types...)> {
   returner_pointer returner_;
 };
 
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_mock_function_hpp
+#endif // skye_mock_function_hpp

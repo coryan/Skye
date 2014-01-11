@@ -1,11 +1,10 @@
-#ifndef skye_common_detail_tuple_streaming_hpp
-#define skye_common_detail_tuple_streaming_hpp
+#ifndef skye_detail_tuple_streaming_hpp
+#define skye_detail_tuple_streaming_hpp
 
 #include <tuple>
 #include <iostream>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /**
@@ -44,7 +43,6 @@ struct tuple_contents_printer<tuple_t,0> {
 };
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
 namespace std {
@@ -56,11 +54,11 @@ template<typename... args>
 ostream & operator<<(
     ostream & os, tuple<args...> const & x) {
   os << "<";
-  skye::common::detail::tuple_contents_printer<
+  skye::detail::tuple_contents_printer<
     tuple<args...>, sizeof...(args)>::print(os, x);
   return os << ">";
 }
 
 } // namespace std
 
-#endif // skye_common_detail_tuple_streaming_hpp
+#endif // skye_detail_tuple_streaming_hpp

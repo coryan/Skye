@@ -25,12 +25,12 @@ class acceptor : public service {
   }
   virtual ~acceptor();
 
-  static skye::common::mock_function<
+  static skye::mock_function<
     void(acceptor*,boost::asio::io_service*)> constructor_mock;
 
   async_accept_member_function async_accept;
 
-  skye::common::mock_function<std::string()> local_endpoint;
+  skye::mock_function<std::string()> local_endpoint;
 };
 
 } // namespace asio

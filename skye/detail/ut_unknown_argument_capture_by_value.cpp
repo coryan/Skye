@@ -1,8 +1,8 @@
-#include <skye/common/detail/unknown_arguments_capture_by_value.hpp>
+#include <skye/detail/unknown_arguments_capture_by_value.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace skye::common::detail;
+using namespace skye::detail;
 
 BOOST_AUTO_TEST_CASE( test_unknown_arguments_capture_by_value ) {
   std::string a("a"), b("b"), c("c"), d("d");

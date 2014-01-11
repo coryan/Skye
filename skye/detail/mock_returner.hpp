@@ -1,12 +1,11 @@
-#ifndef skye_common_detail_mock_returner_hpp
-#define skye_common_detail_mock_returner_hpp
+#ifndef skye_detail_mock_returner_hpp
+#define skye_detail_mock_returner_hpp
 
 #include <memory>
 #include <stdexcept>
 #include <string>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 template<typename return_type>
@@ -111,7 +110,6 @@ struct create_returner<return_value,object_type,false> {
 };
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_detail_mock_returner_hpp
+#endif // skye_detail_mock_returner_hpp

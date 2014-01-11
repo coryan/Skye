@@ -1,7 +1,7 @@
-#ifndef skye_common_detail_function_assertion_hpp
-#define skye_common_detail_function_assertion_hpp
+#ifndef skye_detail_function_assertion_hpp
+#define skye_detail_function_assertion_hpp
 
-#include <skye/common/detail/validator.hpp>
+#include <skye/detail/validator.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include <list>
@@ -11,7 +11,6 @@
 #include <type_traits>
 
 namespace skye {
-namespace common {
 namespace detail {
 
 /**
@@ -205,7 +204,6 @@ class function_assertion {
 #define require_called() require(SKYE_LOCATION)
 
 } // namespace detail
-} // namespace common
 } // namespace skye
 
-#endif // skye_common_detail_function_assertion_hpp
+#endif // skye_detail_function_assertion_hpp

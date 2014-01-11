@@ -1,7 +1,7 @@
 #ifndef skye_asio_detail_async_function_argument_capture_hpp
 #define skye_asio_detail_async_function_argument_capture_hpp
 
-#include <skye/common/detail/argument_wrapper.hpp>
+#include <skye/detail/argument_wrapper.hpp>
 
 #include <boost/asio/buffer.hpp>
 
@@ -236,7 +236,7 @@ class async_function_argument_capture<return_type(arg_types...)>
   /// Capture a set of arguments.
   template<typename... call_types>
   static value_type capture(call_types&&... args) {
-    auto t = skye::common::detail::wrap_args_as_tuple(args...);
+    auto t = skye::detail::wrap_args_as_tuple(args...);
     return async_function_argument_capture_tuple<
       decltype(t),return_type(arg_types...)>::create(std::move(t));
   }

@@ -2,7 +2,7 @@
 #define skye_asio_resolver_hpp
 
 #include <skye/asio/iterator.hpp>
-#include <skye/common/mock_function.hpp>
+#include <skye/mock_function.hpp>
 
 #include <boost/asio/io_service.hpp>
 #include <vector>
@@ -23,7 +23,7 @@ class resolver : public service {
   typedef skye::asio::iterator iterator;
   typedef iterator::resolver_result resolver_result;
 
-  skye::common::mock_function<iterator(std::string const&)> resolve;
+  skye::mock_function<iterator(std::string const&)> resolve;
 };
 
 } // namespace asio

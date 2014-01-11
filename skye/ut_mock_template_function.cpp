@@ -1,4 +1,4 @@
-#include <skye/common/mock_template_function.hpp>
+#include <skye/mock_template_function.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <sstream>
@@ -28,7 +28,7 @@ std::ostream & operator<<(std::ostream & os, test_no_copy const & x ) {
 
 } // anonymous namespace
 
-using namespace skye::common;
+using namespace skye;
 
 BOOST_AUTO_TEST_CASE( mock_template_function_void ) {
   mock_template_function<void> function;

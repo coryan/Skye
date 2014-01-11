@@ -5,7 +5,7 @@
 #include <skye/asio/async_connect_member_function.hpp>
 #include <skye/asio/service.hpp>
 #include <skye/asio/protocol.hpp>
-#include <skye/common/mock_function.hpp>
+#include <skye/mock_function.hpp>
 
 namespace skye {
 namespace asio {
@@ -25,8 +25,8 @@ class socket : public service {
   mutable skye::asio::async_read_member_function async_read_some;
   mutable skye::asio::async_connect_member_function async_connect;
 
-  mutable skye::common::mock_function<bool()> is_open;
-  mutable skye::common::mock_function<void()> cancel;
+  mutable skye::mock_function<bool()> is_open;
+  mutable skye::mock_function<void()> cancel;
 
   // TODO(ES-26) With a lot of macro magic and Boost.Preprocessor
   // hacks we can have some macros generate the functions and variable
@@ -34,12 +34,12 @@ class socket : public service {
   void close() {
     return close_capture_0();
   }
-  mutable skye::common::mock_function<void()> close_capture_0;
+  mutable skye::mock_function<void()> close_capture_0;
 
   virtual void close(boost::system::error_code & ec) {
     return close_capture_1(ec);
   }
-  mutable skye::common::mock_function<
+  mutable skye::mock_function<
     void(boost::system::error_code&)> close_capture_1;
 };
 

@@ -1,9 +1,9 @@
-#include <skye/common/mock_function.hpp>
-#include <skye/common/detail/tuple_streaming.hpp>
+#include <skye/mock_function.hpp>
+#include <skye/detail/tuple_streaming.hpp>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace skye::common;
+using namespace skye;
 
 BOOST_AUTO_TEST_CASE( mock_function_void ) {
   mock_function<void(int,int)> function;

@@ -2,7 +2,7 @@
 #define skye_asio_async_accept_member_function_hpp
 
 #include <skye/asio/detail/async_function_argument_capture.hpp>
-#include <skye/common/mock_template_function.hpp>
+#include <skye/mock_template_function.hpp>
 
 #include <boost/system/error_code.hpp>
 
@@ -11,7 +11,7 @@ namespace asio {
 
 typedef detail::async_function_argument_capture<
   void(boost::system::error_code const &)> async_accept_capture;
-typedef skye::common::mock_template_function<
+typedef skye::mock_template_function<
   void, async_accept_capture> async_accept_member_function;
 
 } // namespace asio
