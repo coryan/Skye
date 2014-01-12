@@ -1,0 +1,32 @@
+/**
+ * @namespace skye
+ *
+ * Basic mocking functions.
+ *
+ * @namespace skye::detail
+ *
+ * Implementation details for skye.
+ *
+ * Holds the types, objects and functions not intenteded to be used by
+ * consumers of the library.
+ */
+
+
+/**
+ * @namespace skye::asio
+ *
+ * Classes to support mocking of Boost.ASIO functions and objects.
+ *
+ * Boost.ASIO is particularly hard to mock because many of its
+ * functions are template functions, and they operate on callback
+ * functors.  The test writer must gain access to the functors created
+ * by Boost.ASIO to simulate behaviors such as network data transfers,
+ * connection failures, etc.
+ *
+ * @namespace skye::asio::detail
+ *
+ * Implementation details for skye::asio.
+ *
+ * Holds the types, object and functions not intended to be used by
+ * consumers of the library. 
+ */
