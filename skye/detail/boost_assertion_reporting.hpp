@@ -1,9 +1,6 @@
 #ifndef skye_detail_boost_assertion_reporting_hpp
 #define skye_detail_boost_assertion_reporting_hpp
 
-#include <skye/skye-config.hpp>
-
-#if defined(HAVE_BOOST_UNIT_TEST_FRAMEWORK)
 #include <skye/detail/validator.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
@@ -71,7 +68,5 @@ struct boost_require_reporting {
 
 } // namespace detail
 } // namespace skye
-
-#endif /* HAVE_BOOST_UNIT_TEST_FRAMEWORK */
 
 #endif // skye_detail_boost_assertion_reporting_hpp

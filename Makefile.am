@@ -26,7 +26,10 @@ AM_CXXFLAGS = $(BOOST_CPPFLAGS)
 AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 # Common configuration for all unit tests
-UT_CPPFLAGS = -DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN
+UT_CPPFLAGS = \
+  -DBOOST_TEST_DYN_LINK \
+  -DBOOST_TEST_MAIN \
+  -DSKYE_USE_BOOST_UNIT_TEST_FRAMEWORK
 skye_ut_libs = \
   $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 skye_ut_asio_libs = \
@@ -47,7 +50,10 @@ skye_lib_skye_a_LIBADD =
 skye_detail_lib_skye_adir = $(includedir)/skye/detail
 skye_detail_lib_skye_a_HEADERS = \
   skye/detail/argument_wrapper.hpp \
+  skye/detail/assertion_reporting.hpp \
   skye/detail/boost_assertion_reporting.hpp \
+  skye/detail/iostream_assertion_reporting.hpp \
+  skye/detail/function_assertion.hpp \
   skye/detail/mock_returner.hpp \
   skye/detail/tuple_streaming.hpp \
   skye/detail/unknown_arguments_capture_by_value.hpp \

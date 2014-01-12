@@ -6,11 +6,15 @@
 namespace skye {
 namespace asio {
 
+struct protocol;
+
 /**
  * Define the endpoint class for the Boost.ASIO mocks.
  */
 class mock_endpoint {
  public:
+  typedef protocol protocol_type;
+
   mock_endpoint() = default;
   explicit mock_endpoint(std::string const & value)
       : value_(value)

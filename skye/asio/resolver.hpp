@@ -15,7 +15,7 @@ namespace asio {
  */
 class resolver : public service {
  public:
-  static boost::asio::io_servicid id;
+  static boost::asio::io_service::id id;
   explicit resolver(boost::asio::io_service & io)
       : service(io)
   {}

@@ -4,15 +4,16 @@
 #include <skye/asio/async_io_member_function.hpp>
 #include <skye/asio/async_connect_member_function.hpp>
 #include <skye/asio/service.hpp>
-#include <skye/asio/protocol.hpp>
 #include <skye/mock_function.hpp>
 
 namespace skye {
 namespace asio {
 
+struct protocol;
+
 class socket : public service {
  public:
-  typedef protocol protocol_type;
+  typedef ::skye::asio::protocol protocol_type;
 
   socket()
   {}

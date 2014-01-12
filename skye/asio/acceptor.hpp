@@ -3,18 +3,20 @@
 
 #include <skye/asio/async_accept_member_function.hpp>
 #include <skye/asio/service.hpp>
+#include <skye/asio/endpoint.hpp>
 
 namespace skye {
 namespace asio {
 
 class acceptor : public service {
  public:
-  typedef std::string endpoint_type;
+  typedef mock_endpoint endpoint_type;
 
   explicit acceptor(boost::asio::io_service & io)
       : service(io)
   {}
-  acceptor(boost::asio::io_service & io, std::string const & ep, bool)
+  acceptor(
+      boost::asio::io_service & io, endpoint_type & ep, bool)
       : service(io)
   {}
   virtual ~acceptor() {
@@ -22,7 +24,7 @@ class acceptor : public service {
 
   async_accept_member_function async_accept;
 
-  skye::mock_function<std::string()> local_endpoint;
+  skye::mock_function<endpoint_type()> local_endpoint;
 };
 
 } // namespace asio

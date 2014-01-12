@@ -5,7 +5,7 @@
 #include <skye/detail/unknown_arguments_capture_by_value.hpp>
 #include <skye/detail/mock_returner.hpp>
 #include <skye/detail/function_assertion.hpp>
-#include <skye/detail/boost_assertion_reporting.hpp>
+#include <skye/detail/assertion_reporting.hpp>
 
 #include <utility>
 
@@ -103,19 +103,21 @@ class mock_template_function {
 
   /// Create a new function assertion, where failures do not terminate
   /// the current test.
-  detail::function_assertion<capture_strategy, detail::boost_check_reporting>
+  detail::function_assertion<
+    capture_strategy, detail::default_check_reporting>
   check(detail::location const & where) {
     return detail::function_assertion<
-      capture_strategy, detail::boost_check_reporting>(
+      capture_strategy, detail::default_check_reporting>(
           captures_, where);
   }
 
   /// Create a new function assertion, where failures terminate the
   /// current test.
-  detail::function_assertion<capture_strategy, detail::boost_require_reporting>
+  detail::function_assertion<
+    capture_strategy, detail::default_require_reporting>
   require(detail::location const & where) {
     return detail::function_assertion<
-      capture_strategy, detail::boost_require_reporting>(
+      capture_strategy, detail::default_require_reporting>(
           captures_, where);
   }
 
