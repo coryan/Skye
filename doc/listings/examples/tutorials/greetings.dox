@@ -1,0 +1,5 @@
+/*!
+@page listings:tutorials:examples:greetings
+
+@include greetings.cpp
+*/

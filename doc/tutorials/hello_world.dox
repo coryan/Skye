@@ -1,0 +1,192 @@
+/*!
+@page tutorials:hello_world Writing tests with Skye
+
+@section just_show_me_code Just Show Me Some Code
+
+A simple Skye based test looks something like this:
+
+@code
+#include <skye/mock_function.hpp>
+
+template<typename convert>
+class calculator {
+public:
+  // Convert x and y from strings to numbers using 'convert' then
+  // returns 'x + y' as a string.
+  std::string add(
+    convert & c, std::string const & x, std::string const & y);
+};
+
+struct mocked_convert {
+  skye::mock_function<std::string(int)> format;
+  skye::mock_function<int(std::string const &)> parse;
+};
+
+/// A simplied test tool in lieu of a real unit testing framework.
+void check_equal(std::string const & actual, std::string const & expected);
+
+/// Your test code
+void test_calculator() {
+  typedef calculator<mocked_convert> tested_unit;
+
+  tested_unit calc;
+
+  mocked_convert c;
+  c.parse.returns( 2 );
+  c.format.returns( std::string("4") );
+
+  std::string actual = calc.add(c, "2", "2");
+  check_equal(actual, "4");
+
+  c.parse.check_called().with( "2" ).exactly(2);
+  c.format.check_called().with( 4 ).once();
+}
+@endcode
+
+Please see @ref listings:tutorials:examples:calculator for a full listing.
+
+@section motivation Why Use a Mocking Framework?
+
+Mocking frameworks allow us to test our components in isolation.
+Many times, out wishes to test a class or function that normally would
+interact with a database, or a remote server, but writing a test that
+uses a real database or a real network server is hardly ideal:
+
+- The tests are no longer 'unit' tests: many other components beyond
+  the class or function in question are involved.
+- The tests are harder to setup: the test must prepare the database to
+  have the expect state, or launch the remote server, or at least run
+  small scale version of these things inside the test.
+- The test may become "flaky": the test may fail because the database
+  is down, or the network had a transient failure, or any number of
+  other reasons that have nothing to do with the quality of the
+  component we are testing.
+
+This argues for trying to test the component in question, but using
+dummies or stand-ins for the components required to access the
+database or the network server.  Of course this means that we will
+need other tests for those components, but you were planning to write
+those anyway, right?
+
+Our proposal is not to eliminate integration tests or tests for larger
+'units', say, a complete network server, or a complete report
+generator working against a development instance of the database.
+Those tests are also necessary, the issue here is that we want to make
+sure our smaller components are testable before we proceed to the
+larger tests.
+
+So how can Skye help in this effort?  Skye provides mechanisms to
+easily create the mocks, that is, those standin functions and classes
+that we need for our test.  It does so by making it easy, with minimal
+programming, to create functions and classes that meet the necessary
+interfaces.  At the same time, it allows us to control how these
+interfaces behave, simply by declaring what we want it to return or an
+exception we want it to throw (@ref skye:future:plans)
+
+@section more_interesting_test A More Interesting Test
+
+To introduce Skye, we will create an admittledly contrived example.
+We are tasked with writing a test for a class that fetches message
+portions from a database, and generates a complete greeting.  This is
+a highly optimized greeter, the class in question uses external
+polymorphism to work with any kind of external database, and the
+message portions can be represented by any kind of STL-like
+collection.  It looks something like this:
+
+@code
+template<typename database_handle>
+class greeter {
+public:
+  greeter(database_handle & handle, std::string const & query_restriction)
+    : msg(build_message(handle, query_restriction))
+  {}
+
+  std::string const greetings() const { return msg; }
+
+private:
+  std::string build_message(
+      database_handle & handle, std::string const & query_restriction);
+
+private:
+  std::string msg;
+};
+@endcode
+
+Obviously the interesting bits are in that @c build_message function:
+
+@code
+  template<typename database_handle>
+  std::string build_message(
+      database_handle & handle, std::string const & query_restriction) {
+    // Create the query string
+    std::string q = "SELECT portion FROM greetings WHERE ";
+    q += query_restriction;
+    q += " ORDER BY position";
+
+    // make the query
+    auto results = handle.query(q);
+
+    // in real code one would use boost::algorithm::join or something
+    // similar ...
+    std::string msg;
+    char const * sep = "";
+    for (auto i : results) {
+      msg += sep;
+      msg += i;
+      sep = " ";
+    }
+    if (msg != "") {
+      msg += "!";
+    }
+    // return the completed message
+    return msg;
+  }
+@endcode
+
+But actually, how it is implemented should not concern us, what we
+need to test is its behavior, which may be specified as:
+
+- Create a query string, fetching the @a portion column from the
+  @a greetings table, using the restriction provided, ordered by the
+  @a position column.
+- Take the results of sending that query to the @c query() member
+  function in the database handle and concatenate them using spaces,
+  and append an exclamation mark if it is not empty.
+
+One could write a mock @c database_handle class, and then use it in
+some unit tests, but this is much easier to do with Skye.  For
+example, one can write define the mock class by simply saying:
+
+@code
+struct mock_db {
+  typedef std::vector<std::string> results;
+
+  skye::mock_function<results(std::string const&)> query;
+};
+@endcode
+
+now, we can write the classic test:
+
+@code
+void test_greetings_classic() {
+  typedef greeter<mock_db> tested_unit;
+
+  mock_db db;
+  db.query.returns( mock_db::results{ "Hello", "World" } );
+
+  tested_unit t(db, "name = 'classic'");
+}
+@endcode
+
+of course this is uninteresting unless we add some assertions:
+
+@code
+  db.query.check_called()
+    .with("SELECT portion FROM greetings WHERE "
+          "name = 'classic' ORDER BY position")
+    .once();
+@endcode
+
+Full listing is available in @ref listings:tutorials:examples:greetings
+
+*/

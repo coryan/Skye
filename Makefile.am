@@ -19,6 +19,12 @@ unit_tests_asio = \
   skye/asio/ut_async_io_member_function \
   skye/asio/ut_iterator
 
+examples = \
+  examples/tutorials/calculator \
+  examples/tutorials/greetings
+
+noinst_PROGRAMS = $(examples)
+
 check_PROGRAMS = $(unit_tests) $(unit_tests_asio)
 TESTS = $(check_PROGRAMS)
 
@@ -158,3 +164,17 @@ skye_asio_ut_iterator_CPPFLAGS = \
   -DBOOST_TEST_MODULE=skye_asio_ut_iterator
 skye_asio_ut_iterator_LDADD = \
   $(skye_ut_asio_libs)
+
+################################################################
+# examples
+################################################################
+
+examples_tutorials_calculator_SOURCES = \
+  examples/tutorials/calculator.cpp
+examples_tutorials_calculator_CPPFLAGS =
+examples_tutorials_calculator_LDADD =
+
+examples_tutorials_greetings_SOURCES = \
+  examples/tutorials/greetings.cpp
+examples_tutorials_greetings_CPPFLAGS =
+examples_tutorials_greetings_LDADD =

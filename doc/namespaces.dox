@@ -9,6 +9,7 @@
  *
  * Holds the types, objects and functions not intenteded to be used by
  * consumers of the library.
+ *
  */
 
 

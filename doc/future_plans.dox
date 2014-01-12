@@ -1,0 +1,41 @@
+/*!
+@page skye:future:plans  What is Missing from Skye
+
+This is an interim release, we do not consider Skye complete, but we
+think that it is already useful.  The main features that we still need
+include:
+
+- A convenience action, like returns() to raise exceptions.  Today
+  this can be done by providing a lambda, but that feels awkward.
+- A general mechanism to execute side-effects when an function is
+  called, the side-effect would receive all the arguments, unlike the
+  functor in returns(), which receives none.
+- A more general filtering expression language for validators, we
+  want to be able to ignore some arguments, and the restrictions on
+  others, so for example one could say:
+@code
+  my_mock.check_called()
+    .with( ignore(), equals(5), my_predicate() )
+    .exactly( 7 );
+@endcode
+ - A easier way to label mocks for use in virtual functions, we want
+   to be able to say something like:
+@code
+    class Mocked : public mock<Mocked> {
+    virtual int foo_bar(std::string const x) const {
+      skye_mocks(Mocked::foo_bar).call_with(x);
+    }
+
+    // test code
+    Mocked m;
+    m.skye_mocks(Mocked::foo_bar).check_called().once();
+@endcode
+  - An even easier way to create mocks with virtual functions.  Either
+    through macros, ala Turtle, or through ABI techniques ala
+    AMOP/mockitocpp.
+  - Implement integration with other testing libraries, we cannot do
+    all of them, but googletest, cppunit and maybe TUT should be
+    included.
+  - Decouple Skye from Boost.Test so users can run our internal tests
+    without installing Boost.Test.
+*/

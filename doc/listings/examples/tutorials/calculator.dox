@@ -1,0 +1,5 @@
+/*!
+@page listings:tutorials:examples:calculator
+
+@include calculator.cpp
+*/

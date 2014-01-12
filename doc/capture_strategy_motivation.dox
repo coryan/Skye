@@ -1,5 +1,5 @@
 /*!
-@page:strategy:motivation Motivating the capture_strategy template parameter.
+@page capture:strategy:motivation Motivating the capture_strategy template parameter.
 
 Mock functions (and particularly template mock functions) require
 us to capture argument lists of unknown types.  Moreover, depending
