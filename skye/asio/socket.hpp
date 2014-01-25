@@ -11,6 +11,9 @@ namespace asio {
 
 struct protocol;
 
+/**
+ * A mock implementation of the socket API in Boost.ASIO.
+ */
 class socket : public service {
  public:
   typedef ::skye::asio::protocol protocol_type;
@@ -29,7 +32,7 @@ class socket : public service {
   mutable skye::mock_function<bool()> is_open;
   mutable skye::mock_function<void()> cancel;
 
-  // TODO(ES-26) With a lot of macro magic and Boost.Preprocessor
+  // TODO(SMF-29) With a lot of macro magic and Boost.Preprocessor
   // hacks we can have some macros generate the functions and variable
   // declarations.
   void close() {

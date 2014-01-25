@@ -8,6 +8,7 @@
  */
 namespace {
 
+/// A non-copyable class
 struct test_no_copy {
   test_no_copy()
       : value(42)
@@ -30,6 +31,9 @@ std::ostream & operator<<(std::ostream & os, test_no_copy const & x ) {
 
 using namespace skye;
 
+/**
+ * @test Verify that template functions returning void can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_template_function_void ) {
   mock_template_function<void> function;
 
@@ -50,6 +54,9 @@ BOOST_AUTO_TEST_CASE( mock_template_function_void ) {
   BOOST_REQUIRE_EQUAL(function.call_count(), 3);
 }
 
+/**
+ * @test Verify that template functions returning a value can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_template_function_with_value ) {
   mock_template_function<std::string> function;
 
@@ -72,6 +79,10 @@ BOOST_AUTO_TEST_CASE( mock_template_function_with_value ) {
   BOOST_REQUIRE_EQUAL(function.call_count(), 3);
 }
 
+/**
+ * @test Verify that template functions receiving non-copy
+ * constructible objects can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_template_function_void_no_copy ) {
   mock_template_function<void> function;
 
@@ -88,6 +99,10 @@ BOOST_AUTO_TEST_CASE( mock_template_function_void_no_copy ) {
   BOOST_REQUIRE_EQUAL(function.call_count(), 2);
 }
 
+/**
+ * @test Verify we can make simple assertions about template member
+ * functions.
+ */
 BOOST_AUTO_TEST_CASE( mock_template_function_check_no_calls ) {
   mock_template_function<void> function;
 
@@ -96,6 +111,9 @@ BOOST_AUTO_TEST_CASE( mock_template_function_check_no_calls ) {
   function.check_called().once();
 }
 
+/**
+ * @test Verify that assertions of mock_template_function work as expected.
+ */
 BOOST_AUTO_TEST_CASE( mock_template_function_asserts ) {
   mock_template_function<int> function;
 

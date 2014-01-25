@@ -10,6 +10,10 @@
 
 namespace skye {
 
+/**
+ * Unimplemented, only the specialization for function signatures is
+ * of any interest.
+ */
 template<typename T>
 class mock_function;
 

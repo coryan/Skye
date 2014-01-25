@@ -9,6 +9,9 @@
 namespace skye {
 namespace asio {
 
+/**
+ * Define related types in the mock implementations of Boost.ASIO.
+ */
 struct protocol {
   typedef ::skye::asio::acceptor acceptor;
   typedef ::skye::asio::mock_endpoint endpoint;

@@ -5,6 +5,9 @@
 
 using namespace skye;
 
+/**
+ * @test Verify that functions returning void can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_void ) {
   mock_function<void(int,int)> function;
 
@@ -21,6 +24,9 @@ BOOST_AUTO_TEST_CASE( mock_function_void ) {
   BOOST_REQUIRE_EQUAL(std::get<1>(function.at(1)), 2);
 }
 
+/**
+ * @test Verify that functions returning int can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_int ) {
   mock_function<int(int,int)> function;
 
@@ -50,6 +56,9 @@ BOOST_AUTO_TEST_CASE( mock_function_int ) {
   BOOST_CHECK_EQUAL(std::get<1>(function.at(2)), 3);
 }
 
+/**
+ * @test Verify that functions with arguments passed by reference can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_reference_args ) {
   mock_function<int(std::string const &,std::string &)> function;
 
@@ -66,6 +75,10 @@ BOOST_AUTO_TEST_CASE( mock_function_reference_args ) {
   BOOST_CHECK_EQUAL(std::get<1>(function.at(0)), "this is another string");
 }
 
+/**
+ * @test Verify that functions returning user-defined types by value
+ * can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_return_by_value ) {
   mock_function<std::string(int, char const*)> function;
 
@@ -81,6 +94,10 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_value ) {
   BOOST_CHECK_EQUAL(std::get<1>(function.at(0)), arg);
 }
 
+/**
+ * @test Verify that functions returning user-defined types by reference
+ * can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
   mock_function<std::string const &(int, char const*)> function;
 
@@ -103,11 +120,13 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
   BOOST_CHECK_EQUAL(std::get<0>(function.at(1)), sizeof(arg));
   BOOST_CHECK_EQUAL(std::get<1>(function.at(1)), arg);
 }
+
 /**
  * Provide simple classes and functions to exercise mock_function.
  */
 namespace {
 
+/// A class to use mocked classes using dynamic and static polymorphism.
 template<typename T>
 std::string use_mock(T & mock) {
   std::string x("this is a string");
@@ -118,6 +137,7 @@ std::string use_mock(T & mock) {
   return mock.f3(42, "hello");
 }
 
+/// The base class for the mocked objects.
 class base {
  public:
   virtual ~base() {}
@@ -125,6 +145,7 @@ class base {
   virtual std::string f3(int x, char const * y) = 0;
 };
 
+/// Mock implementation of the base class.
 class my_mock_class : public base {
  public:
   my_mock_class() {}
@@ -139,6 +160,7 @@ class my_mock_class : public base {
   mock_function<std::string(int,char const*)> f3_capture;
 };
 
+/// Test use of mock objects through static polyphormism.
 template<typename used_type>
 void static_polymorphism_use(used_type & object) {
   std::string non_const("y");
@@ -147,12 +169,16 @@ void static_polymorphism_use(used_type & object) {
   object.f3(5, "1234");
 }
 
+/// Test use of mock objects through dynamic polymorphism.
 void dynamic_polymorphism_use(base & object) {
   object.f3(7, "123456");
 }
 
 } // anonymous namespace
 
+/**
+ * @test Verify that member functions of different types can be mocked.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_member_functions ) {
   my_mock_class object;
   object.f1.returns( 42 );
@@ -178,6 +204,10 @@ BOOST_AUTO_TEST_CASE( mock_function_member_functions ) {
       std::get<0>(object.f3_capture.at(1)), 7);
 }
 
+/**
+ * @test Verify that we can make assertions about functions called
+ * never or once.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_check_no_calls ) {
   mock_function<void(int)> function;
 
@@ -186,6 +216,9 @@ BOOST_AUTO_TEST_CASE( mock_function_check_no_calls ) {
   function.check_called().once();
 }
 
+/**
+ * @test Verify that several types of assertions work correctly.
+ */
 BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
   mock_function<int(int,std::string)> function;
 
@@ -206,53 +239,4 @@ BOOST_AUTO_TEST_CASE( mock_function_asserts ) {
 
   function.check_called().at_least( 3 ).with( 7, std::string("bar" ));
   function.check_called().with( 7, std::string("bar" ));
-
-#if 0
-
-  function.check_called().never().with( 77, dont_care );
-
-  // How do we make this be non-sensical
-  function.check_called().with( 7, std::string("bar" )).once();
-
-
-
-  function.check().called_with( 7, std::string("bar") ).between( 7, 12);
-
-  function.require().at_least( 2 );
-
-  function
-      .capture_strategy( ... );
-
-  function
-      .extract_called_with( 7, std::string("bar") )
-      .once();
-
-  function
-      .assert_called_with( 7, std::string("bar") )
-      .at_least( 2 );
-
-  function
-      .assert_called_with( 7, std::string("bar") )
-      .at_most( 10 );
-
-  function
-      .assert_called( )
-      .between( 5, 15 );
-
-  function
-      .assert_called( )
-      .exactly( 11 );
-
-  function
-      .side_effect( [](int,std::string) { capture } );
-
-  // If we get side_effect() working we can get things like this to work:
-  function.throws( ... );
-  function.calls( ... );
-
-
-  function
-      .call_args_list().at(0);
-
-#endif
 }

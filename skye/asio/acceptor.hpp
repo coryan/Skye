@@ -8,6 +8,9 @@
 namespace skye {
 namespace asio {
 
+/**
+ * Mock implementation of the acceptor interfaces in Boost.ASIO
+ */
 class acceptor : public service {
  public:
   typedef mock_endpoint endpoint_type;

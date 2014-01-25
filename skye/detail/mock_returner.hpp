@@ -8,6 +8,9 @@
 namespace skye {
 namespace detail {
 
+/**
+ * Define the interface for objects used to return values from mock functions.
+ */
 template<typename return_type>
 class returner {
  public:
@@ -17,6 +20,12 @@ class returner {
   virtual return_type execute() = 0;
 };
 
+/**
+ * Implement the default skye::detail::returner for any type.
+ *
+ * By default a mock function instantiates an object of this type to
+ * "return" values, but this in fact only raises exceptions.
+ */
 template<typename return_type>
 class default_returner : public returner<return_type> {
  public:
@@ -29,6 +38,11 @@ class default_returner : public returner<return_type> {
   }
 };
 
+/**
+ * Specialize default_returner for void.
+ *
+ * Simply perform a no-op instead of raising exceptions.
+ */
 template<>
 class default_returner<void> : public returner<void> {
  public:
@@ -38,6 +52,9 @@ class default_returner<void> : public returner<void> {
   virtual void execute() {}
 };
 
+/**
+ * Implement a skye::detail::returner based on a functor object.
+ */
 template<typename return_type, typename functor_type>
 class functor_returner : public returner<return_type> {
  public:
@@ -54,6 +71,9 @@ class functor_returner : public returner<return_type> {
   functor_type functor_;
 };
 
+/**
+ * Implement a skye::detail::returner given a constant value.
+ */
 template<typename return_type, typename value_type>
 class value_returner : public returner<return_type> {
  public:
@@ -102,7 +122,7 @@ struct create_returner<return_type,object_type,true> {
  */
 template<typename return_value, typename object_type>
 struct create_returner<return_value,object_type,false> {
-  // TODO(ES-39)
+  // TODO(SMF-5)
   static typename returner<return_value>::pointer create(object_type object) {
     typedef typename returner<return_value>::pointer pointer; 
     return pointer(new functor_returner<return_value,object_type>(object));
