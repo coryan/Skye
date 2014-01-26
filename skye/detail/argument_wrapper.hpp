@@ -76,14 +76,14 @@ std::ostream & operator<<(std::ostream & os, argument_wrapper<T> const & t) {
 template<typename T>
 auto safe_equals(
     argument_wrapper<T> const & lhs, argument_wrapper<T> const & rhs, bool)
-    -> decltype(lhs.value == rhs.value, bool()) {
+    -> decltype(bool(lhs.value == rhs.value), bool()) {
   return lhs.value == rhs.value;
 }
 
 template<typename T, typename U>
 auto safe_equals(
     argument_wrapper<T> const & lhs, U const & rhs, bool)
-    -> decltype(rhs == lhs.value, bool()) {
+    -> decltype(bool(rhs == lhs.value), bool()) {
   return rhs == lhs.value;
 }
 

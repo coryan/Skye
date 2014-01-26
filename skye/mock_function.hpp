@@ -6,6 +6,8 @@
 #include <skye/detail/function_assertion.hpp>
 #include <skye/detail/assertion_reporting.hpp>
 
+#include <functional>
+#include <list>
 #include <utility>
 
 namespace skye {
@@ -66,12 +68,14 @@ class mock_function<return_type(arg_types...)> {
   typedef typename capture_strategy::value_type value_type;
   typedef typename capture_strategy::capture_sequence capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
-  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
+  typedef std::shared_ptr<detail::returner<return_type>> returner_pointer;
+
   //@}
 
   mock_function()
       : captures_()
-      , returner_(new detail::default_returner<return_type>()) {
+      , side_effects_()
+      , returner_(new detail::default_returner<return_type>) {
   }
 
   /**
@@ -82,7 +86,13 @@ class mock_function<return_type(arg_types...)> {
    * user has not set an specific functor or value to return.
    */
   return_type operator()(arg_types... args) {
-    captures_.push_back(detail::wrap_args_as_tuple(args...));
+    auto v = capture_strategy::capture(std::forward<arg_types>(args)...);
+    captures_.push_back(v);
+    for (auto & i : side_effects_) {
+      if (i.first(std::forward<arg_types>(args)...)) {
+        return i.second->execute();
+      }
+    }
     return returner_->execute();
   }
 
@@ -101,6 +111,63 @@ class mock_function<return_type(arg_types...)> {
     returner_ = detail::create_returner<
       return_type,object_type,convertible>::create(
           std::forward<object_type>(object));
+  }
+
+  typedef std::function<bool(arg_types&&...)> predicate;
+  typedef std::function<void(returner_pointer)> callback;
+  typedef std::list<std::pair<predicate, returner_pointer>> side_effects;
+
+  class when_proxy {
+   public:
+    when_proxy() = delete;
+    when_proxy(when_proxy const &) = delete;
+    when_proxy & operator=(when_proxy const &) = delete;
+    when_proxy(when_proxy &&) = default;
+    when_proxy(callback cb)
+        : callback_(cb)
+        , used_(false)
+    {}
+    ~when_proxy() {
+      if (not used_) {
+        throw std::runtime_error("Called when() without setting an action");
+      }
+    }
+    
+    template<typename object_type>
+    void returns(object_type && object) {
+      typedef typename std::remove_reference<object_type>::type value_type;
+      bool const convertible =
+          std::is_convertible<value_type, return_type>::value;
+
+      auto r = detail::create_returner<
+        return_type,object_type,convertible>::create(
+            std::forward<object_type>(object));
+      callback_(std::move(r));
+      used_ = true;
+    }
+
+   private:
+    callback callback_;
+    bool used_;
+  };
+
+
+  when_proxy whenp(predicate p) {
+    callback cb = [this,p](returner_pointer r) mutable {
+      this->side_effects_.push_back(std::make_pair(p, r));
+    };
+    return when_proxy(cb);
+  }
+
+  /// Create a predicate that matches the arguments and returns a
+  /// proxy for it.
+  when_proxy when(arg_types&&... args) {
+    auto match = capture_strategy::capture(std::forward<arg_types>(args)...);
+    predicate p = [match](arg_types&&... args) {
+      auto v = capture_strategy::capture(std::forward<arg_types>(args)...);
+      return capture_strategy::equals(match, v);
+    };
+    return whenp(p);
   }
 
   /// Create a new function assertion, where failures do not terminate
@@ -123,13 +190,33 @@ class mock_function<return_type(arg_types...)> {
           captures_, where);
   }
 
+
+  /**
+   * Reset the mock to its initial state.
+   */
+  void clear() {
+    clear_captures();
+    clear_returns();
+  }
+
+  /**
+   * Clear any settings for returns().
+   */
+  void clear_returns() {
+    returner_.reset(new detail::default_returner<return_type>);
+  }
+
+  /**
+   * Clear any captured calls.
+   */
+  void clear_captures() {
+    captures_.clear();
+  }
+
   //@{
   /**
    * @name Accessors
    */
-  void clear() {
-    captures_.clear();
-  }
   bool has_calls() const {
     return not captures_.empty();
   }
@@ -150,8 +237,11 @@ class mock_function<return_type(arg_types...)> {
   }
   //@}
 
+  
+
  private:
   capture_sequence captures_;
+  side_effects side_effects_;
   returner_pointer returner_;
 };
 

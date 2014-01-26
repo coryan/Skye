@@ -1,0 +1,103 @@
+/*!
+@page dd:conditional:returns Adding Support for Conditional Returns to Skye
+
+@section dd_conditional_returns_objective Objective
+
+Allow users of Skye to write simpler tests by returning different
+values from mock functions based on the inputs to the mock.
+
+@section dd_conditional_returns_motivation Motivation
+
+Currently Skye mocks always call the same functor to return a value.
+When the test requires more complex logic, the user has to perform
+ackward hacks or write the mocking logic in non-obvious ways.  For
+example, suppose we need to mock a @a std::getenv().  Hopefully the
+module under test uses dependency injection, so it may look like this:
+
+@code
+template<typename getenv>
+struct module_under_test {
+  std::string do_something() {
+    std::string x = getenv::get("FOO_VARIABLE");
+    // ... do some stuff with x
+    std::string y = getenv::get("BAR_VARIABLE");
+    // ... do some stuff with y and x too!
+  }
+};
+@endcode
+
+The mock version of @a getenv would then be implemented as:
+
+@code
+struct mock_getenv {
+  static skye::mock_function<char const *(char const*)> get;
+};
+skye::mock_function<char const *(char const*)> mock_get_env::get;
+@endcode
+
+But using this function in tests is really ackward, for example, to
+return different values for FOO_VARIABLE and BAR_VARIABLE one could
+use a lambda:
+
+@code
+void test_module_under_test() {
+  module_under_test tested;
+
+  int counter = 0;
+  mock_getenv.get.returns( [&counter]() {
+    returns counter++ ? "FOO_VALUE" : "BAR_VALUE";
+  });
+
+  std::string actual = tested.do_something();
+  // Verify the value of actual and any other side-effects here...
+}
+@endcode
+
+Though this works, there are multiple disadvantages:
+
+- The test is coupled to the order in which the FOO_VARIABLE and
+  BAR_VARIABLE are fetched.  Future changes to the code may break the
+  test though the behavior of the system under test is still valid.
+- The behavior of the returns() lambda does not express the intent of
+  the user.
+- Adding more variables requires adding more logic to the lambda.
+
+We propose changes to the mocking library that enable this behavior:
+
+@code
+void test_module_under_test() {
+  module_under_test tested;
+
+  int counter = 0;
+  mock_getenv.get.when( "FOO_VARIABLE" ).returns( "FOO_VALUE" );
+  mock_getenv.get.when( "BAR_VARIABLE" ).returns( "BAR_VALUE" );
+  // By default it raises an exception for values not matched...
+
+  std::string actual = tested.do_something();
+  // Verify the value of actual and any other side-effects here...
+}
+@endcode
+
+@section dd_conditional_returns_design Design
+
+Today mock functions have a single object that controls the return
+value.  We propose to augment this by adding a list of predicate,
+returner pairs.  The predicates will receive all the arguments for the
+mock function, if the predicate is successful, the corresponding
+returner will be used.  If all the predicates in the list fail, then
+the current default returner object will be invoked.
+
+A new member function to clear all the predicates from the mock
+function will be added.
+
+For mock template functions we will use the same techniques as in the
+validators to write generic predicates.
+
+To avoid partial expressions like <tt>mock.when(x);</tt> the when()
+member function will return a proxy object, whose destructor will
+raise an exception unless returns() is called.
+
+
+
+
+*/

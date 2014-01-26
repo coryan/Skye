@@ -68,7 +68,7 @@ class mock_template_function {
   /// Constructor
   mock_template_function()
       : captures_()
-      , returner_(new detail::default_returner<return_type>()) {
+      , returner_(new detail::default_returner<return_type>) {
   }
 
   /**
@@ -121,13 +121,32 @@ class mock_template_function {
           captures_, where);
   }
 
+  /**
+   * Reset the mock to its initial state.
+   */
+  void clear() {
+    clear_captures();
+    clear_returns();
+  }
+
+  /**
+   * Clear any settings for returns().
+   */
+  void clear_returns() {
+    returner_.reset(new detail::default_returner<return_type>);
+  }
+
+  /**
+   * Clear any captured calls.
+   */
+  void clear_captures() {
+    captures_.clear();
+  }
+
   //@{
   /**
    * @name Accessors
    */
-  void clear() {
-    captures_.clear();
-  }
   bool has_calls() const {
     return not captures_.empty();
   }

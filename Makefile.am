@@ -12,6 +12,8 @@ unit_tests = \
   skye/detail/ut_argument_wrapper \
   skye/detail/ut_unknown_argument_capture_by_value \
   skye/detail/ut_validator \
+  skye/ut_conditional_returns \
+  skye/ut_conditional_returns_template \
   skye/ut_mock_function \
   skye/ut_mock_template_function
 unit_tests_asio = \
@@ -66,6 +68,22 @@ skye_detail_lib_skye_a_HEADERS = \
   skye/detail/validator.hpp 
 skye_detail_lib_skye_a_SOURCES = 
 skye_detail_lib_skye_a_LIBADD =
+
+skye_ut_conditional_returns_SOURCES = \
+  skye/ut_conditional_returns.cpp
+skye_ut_conditional_returns_CPPFLAGS = \
+  $(UT_CPPFLAGS) \
+  -DBOOST_TEST_MODULE=skye_ut_conditional_returns
+skye_ut_conditional_returns_LDADD = \
+  $(skye_ut_libs)
+
+skye_ut_conditional_returns_template_SOURCES = \
+  skye/ut_conditional_returns_template.cpp
+skye_ut_conditional_returns_template_CPPFLAGS = \
+  $(UT_CPPFLAGS) \
+  -DBOOST_TEST_MODULE=skye_ut_conditional_returns_template
+skye_ut_conditional_returns_template_LDADD = \
+  $(skye_ut_libs)
 
 skye_ut_mock_function_SOURCES = \
   skye/ut_mock_function.cpp
