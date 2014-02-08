@@ -3,7 +3,7 @@
 
 #include <skye/detail/argument_wrapper.hpp>
 #include <skye/detail/unknown_arguments_capture_by_value.hpp>
-#include <skye/detail/mock_returner.hpp>
+#include <skye/detail/default_return.hpp>
 #include <skye/detail/function_assertion.hpp>
 #include <skye/detail/assertion_reporting.hpp>
 #include <skye/detail/set_action_proxy.hpp>
@@ -63,14 +63,18 @@ class mock_template_function {
   typedef typename capture_strategy::value_type value_type;
   typedef typename capture_strategy::capture_sequence capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
-  typedef std::shared_ptr<detail::returner<return_type>> returner_pointer;
+  typedef std::function<bool(value_type const &)> predicate;
+  typedef detail::set_action_proxy<return_type,predicate> set_action_proxy;
+  typedef typename set_action_proxy::return_function return_function;
+  typedef typename set_action_proxy::callback callback;
+  typedef std::list<std::pair<predicate, return_function>> side_effects;
   //@}
 
   /// Constructor
   mock_template_function()
       : captures_()
       , side_effects_()
-      , returner_(new detail::default_returner<return_type>) {
+      , default_return_(detail::default_return<return_type>) {
   }
 
   /**
@@ -86,39 +90,43 @@ class mock_template_function {
     captures_.push_back(v);
     for (auto & i : side_effects_) {
       if (i.first(v)) {
-        return i.second->execute();
+        return i.second();
       }
     }
-    return returner_->execute();
+    return default_return_();
   }
 
-  /**
-   * Set the return value, functor, function pointer or lambda
-   * expression.
-   *
-   * Use type traits to discover how to treat the object provided.
-   */
+  /// Set a simple return value.
   template<typename object_type>
   void returns(object_type && object) {
-    typedef typename std::remove_reference<object_type>::type value_type;
-    bool const convertible =
-        std::is_convertible<value_type, return_type>::value;
-
-    returner_ = detail::create_returner<
-      return_type,object_type,convertible>::create(
-          std::forward<object_type>(object));
+    callback cb = [this](return_function f) mutable {
+      default_return_ = f;
+    };
+    set_action_proxy(cb).returns(object);
   }
 
-  typedef std::function<bool(value_type const &)> predicate;
-  typedef std::function<void(returner_pointer)> callback;
-  typedef std::list<std::pair<predicate, returner_pointer>> side_effects;
-  typedef detail::set_action_proxy<return_type,predicate> set_action_proxy;
+  /// Throw an exception.
+  template<typename object_type>
+  void throws(object_type && object) {
+    callback cb = [this](return_function f) mutable {
+      default_return_ = f;
+    };
+    set_action_proxy(cb).throws(object);
+  }
+
+  /// Return using a functor object.
+  template<typename functor_type>
+  void action(functor_type functor) {
+    callback cb = [this](return_function f) mutable {
+      default_return_ = f;
+    };
+    set_action_proxy(cb).action(functor);
+  }
 
   /// Prepare a proxy for a given predicate.
   set_action_proxy whenp(predicate p) {
-    typename set_action_proxy::callback cb = [this,p](
-        returner_pointer r) mutable {
-      this->side_effects_.push_back(std::make_pair(p, r));
+    callback cb = [this,p](return_function f) mutable {
+      this->side_effects_.push_back(std::make_pair(p, f));
     };
     return set_action_proxy(cb);
   }
@@ -166,7 +174,7 @@ class mock_template_function {
    * Clear any settings for returns().
    */
   void clear_returns() {
-    returner_.reset(new detail::default_returner<return_type>);
+    default_return_ = detail::default_return<return_type>;
   }
 
   /**
@@ -203,7 +211,7 @@ class mock_template_function {
  private:
   capture_sequence captures_;
   side_effects side_effects_;
-  returner_pointer returner_;
+  return_function default_return_;
 };
 
 } // namespace skye

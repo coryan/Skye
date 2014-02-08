@@ -1,15 +1,12 @@
 #ifndef skye_detail_set_action_proxy_hpp
 #define skye_detail_set_action_proxy_hpp
 
-#include <skye/detail/mock_returner.hpp>
-
 #include <functional>
 #include <stdexcept>
 #include <utility>
 
 namespace skye {
 namespace detail {
-
 
 /**
  * Modify the actions in a mock_function subject to the constraints
@@ -21,8 +18,8 @@ namespace detail {
 template<typename return_type, typename predicate>
 class set_action_proxy {
  public:
-  typedef std::shared_ptr<detail::returner<return_type>> returner_pointer;
-  typedef std::function<void(returner_pointer)> callback;
+  typedef std::function<return_type()> return_function;
+  typedef std::function<void(return_function)> callback;
 
   /**
    * Constructor, use callback to set the actions in the mock function.
@@ -45,13 +42,31 @@ class set_action_proxy {
   template<typename object_type>
   void returns(object_type && object) {
     typedef typename std::remove_reference<object_type>::type value_type;
-    bool const convertible =
-        std::is_convertible<value_type, return_type>::value;
+    static_assert(
+        std::is_convertible<value_type, return_type>::value,
+        "The values provided in returns() must be convertible to return_value");
 
-    auto r = detail::create_returner<
-      return_type,object_type,convertible>::create(
-          std::forward<object_type>(object));
-    callback_(std::move(r));
+    return_function f = [object]() { return object; };
+    callback_(f);
+    used_ = true;
+  }
+
+  template<typename object_type>
+  void throws(object_type && object) {
+    return_function f = [object]() -> return_type { throw object; };
+    callback_(f);
+    used_ = true;
+  }
+
+  template<typename functor_type>
+  void action(functor_type functor) {
+    typedef typename std::remove_reference<functor_type>::type value_type;
+    static_assert(
+        std::is_convertible<value_type, return_function>::value,
+        "The functor provided in action() must be storable in"
+        " std::function<return_type()>");
+
+    callback_(return_function(functor));
     used_ = true;
   }
 

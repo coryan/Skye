@@ -60,9 +60,10 @@ skye_detail_lib_skye_a_HEADERS = \
   skye/detail/argument_wrapper.hpp \
   skye/detail/assertion_reporting.hpp \
   skye/detail/boost_assertion_reporting.hpp \
-  skye/detail/iostream_assertion_reporting.hpp \
+  skye/detail/default_return.hpp \
   skye/detail/function_assertion.hpp \
-  skye/detail/mock_returner.hpp \
+  skye/detail/iostream_assertion_reporting.hpp \
+  skye/detail/set_action_proxy.hpp \
   skye/detail/tuple_streaming.hpp \
   skye/detail/unknown_arguments_capture_by_value.hpp \
   skye/detail/validator.hpp 

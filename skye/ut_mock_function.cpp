@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE( mock_function_int ) {
   BOOST_CHECK_EQUAL(std::get<0>(function.at(1)), 1);
   BOOST_CHECK_EQUAL(std::get<1>(function.at(1)), 2);
 
-  function.returns( []() { return 23; } );
+  function.action( []() { return 23; } );
   r = function(2, 3);
   BOOST_CHECK_EQUAL(r, 23);
 
@@ -116,11 +116,11 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
   std::string expected("42");
 
   function.returns( std::string("42") );
-  std::string const & actual1 = function(sizeof(arg), arg);
+  std::string actual1 = function(sizeof(arg), arg);
   BOOST_CHECK_EQUAL(actual1, expected);
 
   global_string = expected;
-  function.returns( []() -> std::string const& { return global_string; } );
+  function.action( []() -> std::string const& { return global_string; } );
   std::string const & actual2 = function(sizeof(arg), arg);
   BOOST_CHECK_EQUAL(actual2, expected);
 
