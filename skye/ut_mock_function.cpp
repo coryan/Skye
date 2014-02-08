@@ -5,6 +5,15 @@
 
 using namespace skye;
 
+/// Helper objects and types for the test
+namespace {
+/**
+ * Provide a global object to return by reference in
+ * mock_function_return_by_reference.
+ */
+std::string global_string;
+}
+
 /**
  * @test Verify that functions returning void can be mocked.
  */
@@ -110,7 +119,8 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
   std::string const & actual1 = function(sizeof(arg), arg);
   BOOST_CHECK_EQUAL(actual1, expected);
 
-  function.returns( [&expected]() -> std::string const& { return expected; } );
+  global_string = expected;
+  function.returns( []() -> std::string const& { return global_string; } );
   std::string const & actual2 = function(sizeof(arg), arg);
   BOOST_CHECK_EQUAL(actual2, expected);
 

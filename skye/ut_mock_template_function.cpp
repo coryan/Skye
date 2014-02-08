@@ -23,10 +23,6 @@ struct test_no_copy {
   int value;
 };
 
-std::ostream & operator<<(std::ostream & os, test_no_copy const & x ) {
-  return os << "{" << x.value << "}";
-}
-
 } // anonymous namespace
 
 using namespace skye;
