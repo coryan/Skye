@@ -6,8 +6,9 @@
 #include <skye/detail/mock_returner.hpp>
 #include <skye/detail/function_assertion.hpp>
 #include <skye/detail/assertion_reporting.hpp>
+#include <skye/detail/set_action_proxy.hpp>
 
-#include <utility>
+#include <list>
 
 namespace skye {
 
@@ -62,12 +63,13 @@ class mock_template_function {
   typedef typename capture_strategy::value_type value_type;
   typedef typename capture_strategy::capture_sequence capture_sequence;
   typedef typename capture_sequence::const_iterator iterator;
-  typedef std::unique_ptr<detail::returner<return_type>> returner_pointer;
+  typedef std::shared_ptr<detail::returner<return_type>> returner_pointer;
   //@}
 
   /// Constructor
   mock_template_function()
       : captures_()
+      , side_effects_()
       , returner_(new detail::default_returner<return_type>) {
   }
 
@@ -80,7 +82,13 @@ class mock_template_function {
    */
   template<typename... arg_types>
   return_type operator()(arg_types&&... args) {
-    captures_.push_back(capture_strategy::capture(args...));
+    auto v = capture_strategy::capture(args...);
+    captures_.push_back(v);
+    for (auto & i : side_effects_) {
+      if (i.first(v)) {
+        return i.second->execute();
+      }
+    }
     return returner_->execute();
   }
 
@@ -99,6 +107,31 @@ class mock_template_function {
     returner_ = detail::create_returner<
       return_type,object_type,convertible>::create(
           std::forward<object_type>(object));
+  }
+
+  typedef std::function<bool(value_type const &)> predicate;
+  typedef std::function<void(returner_pointer)> callback;
+  typedef std::list<std::pair<predicate, returner_pointer>> side_effects;
+  typedef detail::set_action_proxy<return_type,predicate> set_action_proxy;
+
+  /// Prepare a proxy for a given predicate.
+  set_action_proxy whenp(predicate p) {
+    typename set_action_proxy::callback cb = [this,p](
+        returner_pointer r) mutable {
+      this->side_effects_.push_back(std::make_pair(p, r));
+    };
+    return set_action_proxy(cb);
+  }
+
+  /// Create a predicate that matches the arguments and returns a
+  /// proxy for it.
+  template<typename... arg_types>
+  set_action_proxy when(arg_types&&... args) {
+    auto match = capture_strategy::capture(std::forward<arg_types>(args)...);
+    predicate p = [match](value_type const & v) {
+      return capture_strategy::equals(match, v);
+    };
+    return whenp(p);
   }
 
   /// Create a new function assertion, where failures do not terminate
@@ -169,6 +202,7 @@ class mock_template_function {
 
  private:
   capture_sequence captures_;
+  side_effects side_effects_;
   returner_pointer returner_;
 };
 

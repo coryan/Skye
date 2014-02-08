@@ -5,10 +5,9 @@
 #include <skye/detail/mock_returner.hpp>
 #include <skye/detail/function_assertion.hpp>
 #include <skye/detail/assertion_reporting.hpp>
+#include <skye/detail/set_action_proxy.hpp>
 
-#include <functional>
 #include <list>
-#include <utility>
 
 namespace skye {
 
@@ -114,54 +113,22 @@ class mock_function<return_type(arg_types...)> {
   }
 
   typedef std::function<bool(arg_types&&...)> predicate;
-  typedef std::function<void(returner_pointer)> callback;
   typedef std::list<std::pair<predicate, returner_pointer>> side_effects;
 
-  class when_proxy {
-   public:
-    when_proxy() = delete;
-    when_proxy(when_proxy const &) = delete;
-    when_proxy & operator=(when_proxy const &) = delete;
-    when_proxy(when_proxy &&) = default;
-    when_proxy(callback cb)
-        : callback_(cb)
-        , used_(false)
-    {}
-    ~when_proxy() {
-      if (not used_) {
-        throw std::runtime_error("Called when() without setting an action");
-      }
-    }
-    
-    template<typename object_type>
-    void returns(object_type && object) {
-      typedef typename std::remove_reference<object_type>::type value_type;
-      bool const convertible =
-          std::is_convertible<value_type, return_type>::value;
+  typedef detail::set_action_proxy<return_type,predicate> set_action_proxy;
 
-      auto r = detail::create_returner<
-        return_type,object_type,convertible>::create(
-            std::forward<object_type>(object));
-      callback_(std::move(r));
-      used_ = true;
-    }
-
-   private:
-    callback callback_;
-    bool used_;
-  };
-
-
-  when_proxy whenp(predicate p) {
-    callback cb = [this,p](returner_pointer r) mutable {
+  /// Prepare a proxy for a given predicate.
+  set_action_proxy whenp(predicate p) {
+    typename set_action_proxy::callback cb = [this,p](
+        returner_pointer r) mutable {
       this->side_effects_.push_back(std::make_pair(p, r));
     };
-    return when_proxy(cb);
+    return set_action_proxy(cb);
   }
 
   /// Create a predicate that matches the arguments and returns a
   /// proxy for it.
-  when_proxy when(arg_types&&... args) {
+  set_action_proxy when(arg_types&&... args) {
     auto match = capture_strategy::capture(std::forward<arg_types>(args)...);
     predicate p = [match](arg_types&&... args) {
       auto v = capture_strategy::capture(std::forward<arg_types>(args)...);

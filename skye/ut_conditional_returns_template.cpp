@@ -15,4 +15,10 @@ BOOST_AUTO_TEST_CASE(template_conditional_returns) {
 
   mock_function.clear();
   BOOST_CHECK_THROW(mock_function(7), std::exception);
+
+  mock_function.when( 7 ).returns( 42 );
+  mock_function.when( std::string("hi"), 6 ).returns( 43 );
+  BOOST_CHECK_EQUAL(mock_function(7), 42);
+  BOOST_CHECK_EQUAL(mock_function(std::string("hi"), 6), 43);
+  BOOST_CHECK_THROW(mock_function(), std::exception);
 }
