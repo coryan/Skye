@@ -174,6 +174,7 @@ class mock_template_function {
    * Clear any settings for returns().
    */
   void clear_returns() {
+    side_effects_.clear();
     default_return_ = detail::default_return<return_type>;
   }
 

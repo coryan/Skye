@@ -177,6 +177,7 @@ class mock_function<return_type(arg_types...)> {
    * Clear any settings for returns().
    */
   void clear_returns() {
+    side_effects_.clear();
     default_return_ = detail::default_return<return_type>;
   }
 
@@ -210,8 +211,6 @@ class mock_function<return_type(arg_types...)> {
     return captures_.at(i);
   }
   //@}
-
-  
 
  private:
   capture_sequence captures_;

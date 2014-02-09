@@ -21,4 +21,8 @@ BOOST_AUTO_TEST_CASE(conditional_returns) {
   BOOST_CHECK_EQUAL(mock_function(7), 42);
   BOOST_CHECK_EQUAL(mock_function(6), 41);
   BOOST_CHECK_THROW(mock_function(9), std::exception);
+
+  mock_function.clear_returns();
+  mock_function.returns( 42 );
+  BOOST_CHECK_EQUAL(mock_function(6), 42);
 }
