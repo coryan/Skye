@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([The Skye Mocking Framework], [0.1], [nobdy@example.com])
+AC_INIT([The Skye Mocking Framework], [0.1], [coryan@users.noreply.github.com])
 
 # Move as many of the generated files as possible to a subdirectory
 AC_CONFIG_AUX_DIR(config)
@@ -13,7 +13,6 @@ AC_LANG([C++])
 # We are going to use Automake to generate the makefiles, so initialize it
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_SILENT_RULES([yes])
-AM_MAINTAINER_MODE([enable])
 
 # Create a config header, but with a distinctive name
 AM_CONFIG_HEADER([skye/skye-config.hpp])
