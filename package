@@ -3,9 +3,21 @@
 cd ..
 
 echo Creating tarbal...
-tar -zcf Skye-0.1.tar.gz --exclude=.git --exclude=autom4te.cache ./Skye || exit 1
+tar -zcf Skye-0.1.tar.gz \
+  --exclude=.git \
+  --exclude=autom4te.cache \
+  --exclude=Skye/clang \
+  --exclude=Skye/gcc \
+  --exclude=Skye/build \
+  ./Skye || exit 1
 
 echo Creating zip file...
-zip -q -r skye_0_1.zip ./Skye --exclude '*.git*' --exclude '*/autom4te.cache*' || exit 1
+zip -q -r skye_0_1.zip ./Skye \
+  --exclude '*.git*' \
+  --exclude '*/autom4te.cache*' \
+  --exclude '*/clang/*' \
+  --exclude '*/gcc/*' \
+  --exclude '*/build/*' \
+  || exit 1
 
 exit 0

@@ -1,0 +1,12 @@
+# Autoconf generated files
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config/
+configure
+skye/skye-config.hpp.in
+
+# Common build directories
+clang/
+gcc/
+build/
