@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd ..
+tar -zcvf Skye-0.1.tar.gz --exclude=.git --exclude=autom4te.cache ./Skye
+
+zip zkye_0_1.zip --exclude .git --exclude autom4te.cache ./Skye
