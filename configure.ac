@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-#AC_PREREQ([2.69])
+AC_PREREQ([2.69])
 AC_INIT([The Skye Mocking Framework], [0.1], [coryan@users.noreply.github.com])
 
 # Move as many of the generated files as possible to a subdirectory
