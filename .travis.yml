@@ -1,7 +1,7 @@
 language: cpp
 
 compiler:
-  - gcc
+#  - gcc
   - clang
 
 os:
@@ -16,7 +16,6 @@ before_script:
   - gcc --version
   - clang --version
   - uname -a
-  - ls -l /lib64/libc.so* /lib/libc.so*
 
 script: ./bootstrap && ./configure && make && make check
 
