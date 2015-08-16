@@ -12,6 +12,10 @@ before_install:
   - echo $LC_ALL
   - sudo apt-get install -y libboost-test-dev
   - sudo apt-get install -y autoconf-archive
+  - cat /etc/ubuntu-release || true
+  - cat /etc/lsb-release || true
+  - /bin/ls -l / || true
+  - /bin/ls -l /usr || true
 
 before_script:
   - gcc --version
