@@ -1,0 +1,28 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+os:
+  - linux
+
+before_install:
+  - echo $LANG
+  - echo $LC_ALL
+  - sudo apt-get update -qq && sudo apt-get install -y libboost-test-dev
+
+before_script:
+  - gcc --version
+  - clang --version
+  - uname -a
+  - /lib64/libc.so.6
+
+script: ./bootstrap && ./configure && make && make check
+
+branches:
+  only:
+    - configure-travis
+
+notifications:
+  email: false
