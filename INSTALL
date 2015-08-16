@@ -1,5 +1,7 @@
 Configure and install using the usual autotools setup:
 
+# Optional, if compiling from a git clone
+# $ ./bootstrap
 $ ./configure
 $ make
 $ make check
