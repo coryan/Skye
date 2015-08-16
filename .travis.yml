@@ -14,8 +14,10 @@ before_install:
   - sudo apt-get install -y autoconf-archive
   - cat /etc/ubuntu-release || true
   - cat /etc/lsb-release || true
-  - /bin/ls -l / || true
-  - /bin/ls -l /usr || true
+  - /bin/ls -l /lib64/libc* || true  
+  - /bin/ls -l /lib64/lib* || true  
+  - /bin/ls -l /usr/share/aclocal/ax_cxx_*.m4 || true  
+  - cat /usr/share/aclocal/ax_cxx_compile_stdcxx_11.m4 || true
 
 before_script:
   - gcc --version
