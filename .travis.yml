@@ -16,7 +16,7 @@ before_script:
   - gcc --version
   - clang --version
   - uname -a
-  - /lib64/libc.so.6
+  - ls -l /lib64/libc.so* /lib/libc.so*
 
 script: ./bootstrap && ./configure && make && make check
 
