@@ -4,21 +4,24 @@ machine:
 
 dependencies:
   pre:
-    - cat /etc/lsb-release || true
+    - sudo apt-get install python-software-properties
+    - sudo add-apt-repository -y ppa:dns/gnu
+    - sudo add-apt-repository -y ppa:boost-latest/ppa
+    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-get -qq update
+    - sudo apt-get -qq install autoconf autoconf-archive
+    - sudo apt-get -qq install boost1.55
+    - sudo apt-get -qq install g++-4.9
+    - sudo apt-get -qq install xsltproc
     - gcc --version
     - g++ --version
     - uname -a
 
 test:
   override:
-    - ls -l
-    - exit 0
+    - ./bootstrap && ./configure
+    - make check
+    - ./test/circleci_test_capture.sh
 
-#    - sudo apt-get install python-software-properties
-#    - sudo add-apt-repository -y ppa:dns/gnu
-#    - sudo add-apt-repository -y ppa:boost-latest/ppa
-#    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-#    - sudo apt-get -qq update
-#    - sudo apt-get -qq install autoconf autoconf-archive
-#    - sudo apt-get -qq install boost1.55
-#    - sudo apt-get -qq install g++-4.9
+
+
