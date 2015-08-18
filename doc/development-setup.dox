@@ -19,6 +19,22 @@ We are going to need the basic development tools:
 @code
 sudo apt-get install autoconf automake autoconf-archive \
   git gcc clang make libboost-test-dev
+
+sudo apt-get -qq install python-software-properties
+sudo add-apt-repository -y ppa:dns/gnu
+sudo add-apt-repository -y ppa:boost-latest/ppa
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository -y ppa:h-rayflood/llvm-upper 
+sudo apt-get -qq update
+sudo apt-get -qq install autoconf autoconf-archive
+sudo apt-get -qq install boost1.55
+sudo apt-get -qq install g++-4.9
+sudo apt-get -qq install clang-3.5
+
+
+CC=clang-3.5 CXX=clang++-3.5 ./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu
 @endcode
+
+
 
 
