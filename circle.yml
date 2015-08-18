@@ -1,0 +1,24 @@
+machine:
+  timezone:
+    America/New_York
+
+dependencies:
+  pre:
+    - cat /etc/lsb-release || true
+    - gcc --version
+    - g++ --version
+    - uname -a
+
+test:
+  override:
+    - ls -l
+    - exit 0
+
+#    - sudo apt-get install python-software-properties
+#    - sudo add-apt-repository -y ppa:dns/gnu
+#    - sudo add-apt-repository -y ppa:boost-latest/ppa
+#    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+#    - sudo apt-get -qq update
+#    - sudo apt-get -qq install autoconf autoconf-archive
+#    - sudo apt-get -qq install boost1.55
+#    - sudo apt-get -qq install g++-4.9
