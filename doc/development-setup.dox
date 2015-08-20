@@ -1,0 +1,40 @@
+/*!
+@page setup Configuration Guide: How to setup your workstation to compile Skye
+
+@section setup_intro Introduction
+
+These are my notes on how to prepare your environment to build Skye.
+If you find a problem with these instructions please submit a patch.
+
+@section setup_install Installing Software Requirements
+
+I assume that you have superuser privileges in your workstation.  The
+instructions were originally written for Ubuntu 12.04, though this is
+not my primary development platform, nor one I would recommend for
+that matter, it is a popular platform for Cloud services and for
+http://travis-ci.com.
+
+We are going to need the basic development tools:
+
+@code
+sudo apt-get install autoconf automake autoconf-archive \
+  git gcc clang make libboost-test-dev
+
+sudo apt-get -qq install python-software-properties
+sudo add-apt-repository -y ppa:dns/gnu
+sudo add-apt-repository -y ppa:boost-latest/ppa
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository -y ppa:h-rayflood/llvm-upper 
+sudo apt-get -qq update
+sudo apt-get -qq install autoconf autoconf-archive
+sudo apt-get -qq install boost1.55
+sudo apt-get -qq install g++-4.9
+sudo apt-get -qq install clang-3.5
+
+
+CC=clang-3.5 CXX=clang++-3.5 ./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu
+@endcode
+
+
+
+

@@ -1,0 +1,36 @@
+language: cpp
+
+compiler:
+#  - gcc
+  - clang
+
+os:
+  - linux
+
+before_install:
+  - sudo apt-get install python-software-properties
+  - sudo add-apt-repository -y ppa:dns/gnu
+  - sudo add-apt-repository -y ppa:boost-latest/ppa
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install autoconf autoconf-archive
+  - sudo apt-get -qq install boost1.55
+  - sudo apt-get -qq install g++-4.9
+  - echo 2 | sudo update-alternatives --config gcc
+
+before_script:
+  - gcc --version
+  - clang --version
+  - ld --version
+  - dpkg -s autoconf-archive
+  - dpkg -s autoconf
+  - cat /etc/lsb-release || true
+
+script: ./bootstrap && ./configure && make && make check
+
+branches:
+  only:
+    - configure-travis
+
+notifications:
+  email: false
