@@ -5,20 +5,21 @@
 
 These are my notes on how to prepare your environment to build Skye.
 If you find a problem with these instructions please submit a patch.
+I assume that you have superuser privileges in your workstation.
 
-@section setup_install Installing Software Requirements
+@section ubuntu_precise Ubuntu 12.04 (Precise Pangolin LTS)
 
-I assume that you have superuser privileges in your workstation.  The
-instructions were originally written for Ubuntu 12.04, though this is
-not my primary development platform, nor one I would recommend for
-that matter, it is a popular platform for Cloud services and for
-http://travis-ci.com.
+One of the most popular platforms for Cloud and for hosted continuous
+integration, unfortunately also a platform with poor support for
+C++11.
 
-We are going to need the basic development tools:
+I will simply refer you to my [post](http://coryan.github.io/2015/08/22/to-build-your-program-from-scratch-you-must-first-build-the-universe/)
+
+@section fedora_21 Fedora 21
+
+Just install the stock tools:
 
 @code
-sudo apt-get install autoconf automake autoconf-archive \
-  git gcc clang make libboost-test-dev
+sudo apt-get install gcc-g++ clang autoconf automake autoconf-archive \
+  git boost-devel
 @endcode
-
-
