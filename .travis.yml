@@ -1,34 +1,47 @@
 language: cpp
 
-compiler:
-#  - gcc
-  - clang
-
 os:
   - linux
 
+compiler:
+  - clang
+
+# The rationale is documented in
+# http://coryan.github.io/2015/08/22/to-build-your-program-from-scratch-you-must-first-build-the-universe/
 before_install:
-  - echo $LANG
-  - echo $LC_ALL
-  - sudo apt-get install -y libboost-test-dev
-  - sudo apt-get install -y autoconf-archive
-  - cat /etc/ubuntu-release || true
-  - cat /etc/lsb-release || true
-  - /bin/ls -l /lib64/libc* || true  
-  - /bin/ls -l /lib64/lib* || true  
-  - /bin/ls -l /usr/share/aclocal/ax_cxx_*.m4 || true  
-  - cat /usr/share/aclocal/ax_cxx_compile_stdcxx_11.m4 || true
+  - sudo apt-get -qq -y install python-software-properties
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository -y ppa:dns/gnu
+  - sudo add-apt-repository -y ppa:boost-latest/ppa
+  - sudo add-apt-repository -y "deb http://llvm.org/apt/precise/ llvm-toolchain-  - precise main"
+  - sudo add-apt-repository -y "deb http://llvm.org/apt/precise/ llvm-toolchain-  - precise-3.6 main"
+  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
+  - sudo apt-get -qq update
+  - sudo apt-get -qq -y install clang-3.8
+  - sudo apt-get -qq -y install g++-4.9
+  - sudo apt-get -qq -y install boost1.55
+  - sudo apt-get -qq -y install autoconf automake autoconf-archive make
+  - sudo apt-get -qq -y install git
 
 before_script:
-  - gcc --version
-  - clang --version
   - uname -a
+  - g++ --version
+  - clang++ --version
+  - g++-4.9 --version
+  - clang++-3.8 --version
+  - make --version
+  - automake --version
+  - autoconf --version
+  - dpkg -s autoconf-archive
+  - dpkg -s boost-test1.55-dev
+  - echo $CXX
+  - echo $CC
+  - CC=clang-3.8
+  - export CC
+  - CXX=clang++-3.8
+  - export CXX  
 
-script: ./bootstrap && ./configure && make && make check
-
-branches:
-  only:
-    - configure-travis
+script: ./bootstrap && ./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu && make && make check
 
 notifications:
   email: false
