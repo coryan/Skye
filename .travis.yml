@@ -41,7 +41,14 @@ before_script:
   - CXX=clang++-3.8
   - export CXX  
 
-script: ./bootstrap && ./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu && make && make check
+script:
+  - ./bootstrap
+  - echo CC=${CC?} CXX=${CXX?}
+  - buildir=$(basename ${CC?})
+  - mkdir ${buildir?} && cd ${buildir?}
+  - ../configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu
+  - make
+  - make check
 
 branches:
   only:
