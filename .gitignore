@@ -10,3 +10,6 @@ skye/skye-config.hpp.in
 clang/
 gcc/
 build/
+
+# Emacs backup files
+*~

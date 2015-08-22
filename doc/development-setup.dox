@@ -1,0 +1,25 @@
+/*!
+@page setup Configuration Guide: How to setup your workstation to compile Skye
+
+@section setup_intro Introduction
+
+These are my notes on how to prepare your environment to build Skye.
+If you find a problem with these instructions please submit a patch.
+I assume that you have superuser privileges in your workstation.
+
+@section ubuntu_precise Ubuntu 12.04 (Precise Pangolin LTS)
+
+One of the most popular platforms for Cloud and for hosted continuous
+integration, unfortunately also a platform with poor support for
+C++11.
+
+I will simply refer you to my [post](http://coryan.github.io/2015/08/22/to-build-your-program-from-scratch-you-must-first-build-the-universe/)
+
+@section fedora_21 Fedora 21
+
+Just install the stock tools:
+
+@code
+sudo apt-get install gcc-g++ clang autoconf automake autoconf-archive \
+  git boost-devel
+@endcode
