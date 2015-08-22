@@ -50,9 +50,5 @@ script:
   - make
   - make check
 
-branches:
-  only:
-    - configure-travis
-
 notifications:
   email: false
