@@ -43,5 +43,9 @@ before_script:
 
 script: ./bootstrap && ./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu && make && make check
 
+branches:
+  only:
+    - configure-travis
+
 notifications:
   email: false
