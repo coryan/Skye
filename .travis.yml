@@ -25,15 +25,15 @@ before_install:
 
 before_script:
   - uname -a
-  - g++ --version
-  - clang++ --version
-  - g++-4.9 --version
-  - clang++-3.6 --version
-  - make --version
-  - automake --version
-  - autoconf --version
-  - dpkg -s autoconf-archive
-  - dpkg -s boost-test1.55-dev
+  - g++ --version || echo "no g++ found"
+  - clang++ --version || echo "no clang++ found"
+  - g++-4.9 --version || echo "no g++-4.9 found"
+  - clang++-3.6 --version || echo "no clang++-3.6 found"
+  - make --version || echo "no make found"
+  - automake --version || echo "no automake found"
+  - autoconf --version || echo "no autoconf found"
+  - dpkg -s autoconf-archive || echo "no autoconf-archive found"
+  - dpkg -s libboost-test1.55-dev || echo "no libboost-test1.55-dev found"
   - echo $CXX
   - echo $CC
   - CC=clang-3.6
