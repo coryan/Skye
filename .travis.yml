@@ -5,6 +5,7 @@ os:
 
 compiler:
   - clang
+  - gcc
 
 # The rationale is documented in
 # http://coryan.github.io/2015/08/22/to-build-your-program-from-scratch-you-must-first-build-the-universe/
@@ -34,17 +35,15 @@ before_script:
   - autoconf --version || echo "no autoconf found"
   - dpkg -s autoconf-archive || echo "no autoconf-archive found"
   - dpkg -s libboost-test1.55-dev || echo "no libboost-test1.55-dev found"
-  - echo $CXX
-  - echo $CC
-  - CC=clang-3.6
+  - if [ "x$CC" -eq "xgcc" ]; then CXX=g++-4.9; CC=gcc-4.9; fi
+  - if [ "x$CC" -eq "xclang" ]; then CXX=clang++-3.6; CC=clang-3.6; fi
   - export CC
-  - CXX=clang++-3.6
   - export CXX  
 
 script:
   - ./bootstrap
-  - echo CC=${CC?} CXX=${CXX?}
   - buildir=$(basename ${CC?})
+  - echo buildir=${buildir?}
   - mkdir ${buildir?} && cd ${buildir?}
   - ../configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu
   - make
