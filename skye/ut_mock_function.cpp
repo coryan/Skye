@@ -89,17 +89,18 @@ BOOST_AUTO_TEST_CASE( mock_function_reference_args ) {
  * can be mocked.
  */
 BOOST_AUTO_TEST_CASE( mock_function_return_by_value ) {
-  mock_function<std::string(int, char const*)> function;
+  mock_function<std::string(std::size_t, char const*)> function;
 
   BOOST_CHECK(not function.has_calls());
 
   function.returns( std::string("42") );
   char const arg[] = "test array";
-  std::string r = function(sizeof(arg), arg);
+  std::size_t const argsize = sizeof(arg);
+  std::string r = function(argsize, arg);
   BOOST_CHECK_EQUAL(r, "42");
 
   BOOST_REQUIRE_EQUAL(function.call_count(), 1);
-  BOOST_CHECK_EQUAL(std::get<0>(function.at(0)), sizeof(arg));
+  BOOST_CHECK_EQUAL(std::get<0>(function.at(0)), argsize);
   BOOST_CHECK_EQUAL(std::get<1>(function.at(0)), arg);
 }
 
@@ -108,27 +109,21 @@ BOOST_AUTO_TEST_CASE( mock_function_return_by_value ) {
  * can be mocked.
  */
 BOOST_AUTO_TEST_CASE( mock_function_return_by_reference ) {
-  mock_function<std::string const &(int, char const*)> function;
+  mock_function<std::string const &(std::size_t, char const*)> function;
 
   BOOST_CHECK(not function.has_calls());
 
   char const arg[] = "test array";
   std::string expected("42");
 
-  function.returns( std::string("42") );
-  std::string actual1 = function(sizeof(arg), arg);
-  BOOST_CHECK_EQUAL(actual1, expected);
-
   global_string = expected;
   function.action( []() -> std::string const& { return global_string; } );
   std::string const & actual2 = function(sizeof(arg), arg);
   BOOST_CHECK_EQUAL(actual2, expected);
 
-  BOOST_REQUIRE_EQUAL(function.call_count(), 2);
+  BOOST_REQUIRE_EQUAL(function.call_count(), 1);
   BOOST_CHECK_EQUAL(std::get<0>(function.at(0)), sizeof(arg));
   BOOST_CHECK_EQUAL(std::get<1>(function.at(0)), arg);
-  BOOST_CHECK_EQUAL(std::get<0>(function.at(1)), sizeof(arg));
-  BOOST_CHECK_EQUAL(std::get<1>(function.at(1)), arg);
 }
 
 /**
