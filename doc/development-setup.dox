@@ -15,11 +15,29 @@ C++11.
 
 I will simply refer you to my [post](http://coryan.github.io/2015/08/22/to-build-your-program-from-scratch-you-must-first-build-the-universe/)
 
+@section ubuntu_xenial Ubuntu 16.04 (Xenial Xerus LTS)
+
+You need to install the development tools and dependencies:
+
+@code
+sudo apt-get install automake gcc g++ libfftw3-dev libyaml-cpp-dev libboost-all-dev autoconf-archive git make
+@endcode
+
+Do not try to use clang, there are ABI incompatibilities between the
+version of gcc used to compile the boost libraries and the clang
+compiler.  You also need more than the usual flags for the configure
+script to find all the libraries:
+
+@code
+cd skye && mkdir gcc && cd gcc
+CXX=g++ CC=gcc CPPFLAGS=-D_GLIBCXX_USE_CXX11_ABI=1 ../configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu
+@endcode
+
 @section fedora_21 Fedora 21
 
 Just install the stock tools:
 
 @code
-sudo apt-get install gcc-g++ clang autoconf automake autoconf-archive \
+sudo yum install gcc-g++ clang autoconf automake autoconf-archive \
   git boost-devel
 @endcode
