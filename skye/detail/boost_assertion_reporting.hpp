@@ -16,7 +16,12 @@ inline void boost_log_common(
         << boost::unit_test::log::begin(where.file, where.line)
         << ll << msg
         << boost::unit_test::log::end();
-    boost::unit_test::framework::assertion_result( success );
+#if BOOST_VERSION < 106000
+    boost::unit_test::framework::assertion_result(success);
+#else
+    boost::unit_test::framework::assertion_result(
+        boost::unit_test::assertion_result(success));
+#endif // BOOST_VERSION
 }
 
 /// Report to Boost.Test using BOOST_CHECK_* semantics.
