@@ -28,7 +28,7 @@ class set_action_proxy {
       : callback_(cb)
       , used_(false)
   {}
-  ~set_action_proxy() {
+  ~set_action_proxy() noexcept(false) {
     if (not used_) {
       throw std::runtime_error("Called when() without setting an action");
     }
