@@ -82,7 +82,12 @@ class function_assertion {
       , where_(where) {
     reporting_strategy::checkpoint(where_);
   }
-  ~function_assertion() {
+  /**
+   * Destructor
+   *
+   * @throws std::exception if a validation error occurs.
+   */
+  ~function_assertion() noexcept(false) {
     validate();
   }
 
