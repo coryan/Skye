@@ -1,5 +1,11 @@
-Skye Documentation                {#mainpage}
+Skye Documentation
 ==================
+
+Skye is no longer supported or maintained.  I created it to handle
+specific use cases (see the Boost.ASIO support), but it proved easier
+to use
+[Google Mock](https://github.com/google/googletest/tree/master/googlemock)
+than to write a completely separate mocking framework.
 
 [![Build Status](https://travis-ci.org/coryan/Skye.svg?branch=master)](https://travis-ci.org/coryan/Skye)
 
